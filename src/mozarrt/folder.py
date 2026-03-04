@@ -7,8 +7,10 @@ import pandas as pd
 from cyclopts.types import ExistingDirectory
 from loguru import logger
 from mobiedantic import Dataset, Project, Source
+from mobiedantic.generated import SegmentationDisplay, SegmentationDisplay1
 from natsort import natsorted
 from ngio import open_ome_zarr_container
+from scipy.ndimage import center_of_mass, find_objects
 
 if TYPE_CHECKING:
     from ngio import Image, OmeZarrContainer
@@ -21,10 +23,9 @@ def _source_path_payload(
     channel_index: int | None = None,
 ) -> dict[str, int | str]:
     try:
+        relative_path = Path(source_path).relative_to(dataset_path, walk_up=True)
         payload: dict[str, int | str] = {
-            "relativePath": str(
-                Path(source_path).relative_to(dataset_path, walk_up=True)
-            ),
+            "relativePath": relative_path.as_posix(),
         }
     except (ValueError, TypeError):
         payload = {
@@ -36,27 +37,77 @@ def _source_path_payload(
     return payload
 
 
-def _extract_observed_label_ids(label) -> list[int]:
-    label_values = np.unique(label.get_as_numpy())
-    return [int(value) for value in label_values if int(value) > 0]
+def _normalize_relative_paths(value):
+    if isinstance(value, dict):
+        normalized = {}
+        for key, item in value.items():
+            if key == "relativePath" and isinstance(item, str):
+                normalized[key] = item.replace("\\", "/")
+            else:
+                normalized[key] = _normalize_relative_paths(item)
+        return normalized
+    if isinstance(value, list):
+        return [_normalize_relative_paths(item) for item in value]
+    return value
 
 
 def _write_segmentation_table(
     *,
     dataset_path: Path,
     source_name: str,
-    label_ids: list[int],
+    label,
 ) -> Path:
+    arr = label.get_as_numpy()
+    axes = label.axes  # e.g. ('y', 'x') or ('z', 'y', 'x')
+    is_3d = "z" in axes
+
+    scale = label.pixel_size
+    # axis order in array: (y, x) for 2D, (z, y, x) for 3D
+    if is_3d:
+        scale_factors = [scale.z, scale.y, scale.x]
+    else:
+        scale_factors = [scale.y, scale.x]
+
+    label_ids = [int(v) for v in np.unique(arr) if int(v) > 0]
+
+    slices = find_objects(arr)
+    centroids = center_of_mass(arr, arr, label_ids)
+    if len(label_ids) == 1:
+        centroids = [centroids]
+
+    rows = []
+    for label_id, centroid in zip(label_ids, centroids):
+        sl = slices[label_id - 1]  # find_objects is 1-indexed
+        if is_3d:
+            cz, cy, cx = [float(centroid[i]) * scale_factors[i] for i in range(3)]
+            row = {
+                "label_id": label_id,
+                "anchor_x": cx,
+                "anchor_y": cy,
+                "anchor_z": cz,
+                "bb_min_x": sl[2].start * scale.x,
+                "bb_min_y": sl[1].start * scale.y,
+                "bb_min_z": sl[0].start * scale.z,
+                "bb_max_x": (sl[2].stop - 1) * scale.x,
+                "bb_max_y": (sl[1].stop - 1) * scale.y,
+                "bb_max_z": (sl[0].stop - 1) * scale.z,
+            }
+        else:
+            cy, cx = [float(centroid[i]) * scale_factors[i] for i in range(2)]
+            row = {
+                "label_id": label_id,
+                "anchor_x": cx,
+                "anchor_y": cy,
+                "bb_min_x": sl[1].start * scale.x,
+                "bb_min_y": sl[0].start * scale.y,
+                "bb_max_x": (sl[1].stop - 1) * scale.x,
+                "bb_max_y": (sl[0].stop - 1) * scale.y,
+            }
+        rows.append(row)
+
     table_dir = dataset_path / "tables" / source_name
     table_dir.mkdir(parents=True, exist_ok=True)
-
-    table = pd.DataFrame(
-        {
-            "label_id": label_ids,
-            "annotation": ["" for _ in label_ids],
-        }
-    )
-    table.to_csv(table_dir / "default.tsv", sep="\t", index=False)
+    pd.DataFrame(rows).to_csv(table_dir / "default.tsv", sep="\t", index=False)
     return table_dir
 
 
@@ -72,7 +123,7 @@ def _add_segmentation_source(
         dataset_path=dataset.path,
         channel_index=None,
     )
-    table_relative_path = str(table_dir.relative_to(dataset.path))
+    table_relative_path = table_dir.relative_to(dataset.path).as_posix()
     source_data = {
         "segmentation": {
             "imageData": {
@@ -132,6 +183,7 @@ def project(
     # format: sources[channel_name] = pathdict (name: Path)
     sources = defaultdict(dict)
     position_map = defaultdict(list)
+    segmentation_source_names: list[str] = []
 
     for zarr_dir in zarr_dirs:
         logger.info(f"Processing {zarr_dir}")
@@ -147,20 +199,19 @@ def project(
         for label_name in position.list_labels():
             logger.info(f"  Label: {label_name}")
             label = position.get_label(label_name)
-            label_ids = _extract_observed_label_ids(label)
             source_name = f"{zarr_dir.stem}_{label_name}"
             table_dir = _write_segmentation_table(
                 dataset_path=dataset.path,
                 source_name=source_name,
-                label_ids=label_ids,
+                label=label,
             )
             _add_segmentation_source(
                 dataset=dataset,
                 source_name=source_name,
-                source_path=zarr_dir,
+                source_path=zarr_dir / "labels" / label_name,
                 table_dir=table_dir,
             )
-            position_map[zarr_dir.stem].append(source_name)
+            segmentation_source_names.append(source_name)
 
     for channel_index, channel_name in enumerate(channel_names):
         logger.info(f"Adding source for channel {channel_name}...")
@@ -184,6 +235,26 @@ def project(
         name="all_positions",
         map_of_sources=position_map,
     )
+
+    for segmentation_source_name in segmentation_source_names:
+        dataset.model.views["default"].sourceDisplays.append(
+            SegmentationDisplay(
+                segmentationDisplay=SegmentationDisplay1(
+                    name=segmentation_source_name,
+                    sources=[segmentation_source_name],
+                    opacity=0.5,
+                    lut="glasbey",
+                )
+            )
+        )
+
+    normalized_sources = {}
+    for source_name, source in dataset.model.sources.items():
+        source_data = source.model_dump(exclude_none=True, by_alias=True)
+        normalized_sources[source_name] = Source(
+            **_normalize_relative_paths(source_data)
+        )
+    dataset.model.sources = normalized_sources
 
     dataset.save()
     project.save()

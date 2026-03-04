@@ -1,3 +1,4 @@
+import json
 import shutil
 from pathlib import Path
 
@@ -12,8 +13,8 @@ from mozarrt.folder import project
 @pytest.mark.parametrize(
     "dimension,expected_is2d,num_sources",
     [
-        ("2d", True, 9),
-        ("3d", False, 5),
+        ("2d", True, 13),
+        ("3d", False, 9),
     ],
 )
 def test_folder_dimension(tmp_path, dimension, expected_is2d, num_sources):
@@ -116,3 +117,17 @@ def test_folder_creates_segmentation_tables_for_observed_labels(tmp_path):
 
     table = pd.read_csv(table_path, sep="\t")
     assert set(table["label_id"].tolist()) == {1, 5}
+
+    with open(dataset_dir / "dataset.json") as dataset_file:
+        dataset_json = json.load(dataset_file)
+
+    region_sources = dataset_json["views"]["default"]["sourceDisplays"][0][
+        "regionDisplay"
+    ]["sources"]["sample"]
+    assert "sample_nuclei" not in region_sources
+
+    display_names = []
+    for display in dataset_json["views"]["default"]["sourceDisplays"]:
+        if "segmentationDisplay" in display:
+            display_names.append(display["segmentationDisplay"]["name"])
+    assert "sample_nuclei" in display_names
