@@ -1,22 +1,39 @@
 from collections import defaultdict
-from cyclopts.types import ExistingDirectory
-from loguru import logger
-from natsort import natsorted
-from ngio import OmeZarrContainer, open_ome_zarr_container, open_ome_zarr_plate
-from ngio.hcs import OmeZarrPlate
-from mobiedantic import Project, Dataset
 from pathlib import Path
 
+from cyclopts.types import ExistingDirectory
+from loguru import logger
+from mobiedantic import Dataset, Project, Source
+from mobiedantic.generated import (
+    ImageDisplay,
+    ImageDisplay1,
+    MergedGrid,
+    MergedGrid1,
+    SegmentationDisplay,
+    SegmentationDisplay1,
+    TransformedGrid,
+    TransformedGrid1,
+)
+from ngio import open_ome_zarr_container, open_ome_zarr_plate
+from ngio.hcs import OmeZarrPlate
+
+from mozarrt._table_utils import (
+    add_segmentation_source,
+    compute_label_rows,
+    normalize_relative_paths,
+    write_segmentation_table,
+)
 from mozarrt.mobie_collection import MoBIECollectionEntry, collection_dataframe
 
+
 def _create_intensities_entry(
-        uri: str,
-        name: str,
-        channel: int,
-        grid: str,
-        display: str,
-        # grid_position: tuple[int, int],
-    ) -> MoBIECollectionEntry:
+    uri: str,
+    name: str,
+    channel: int,
+    grid: str,
+    display: str,
+    # grid_position: tuple[int, int],
+) -> MoBIECollectionEntry:
     return MoBIECollectionEntry(
         uri=uri,
         name=name,
@@ -30,14 +47,15 @@ def _create_intensities_entry(
         # grid_position=grid_position,
     )
 
+
 def _create_labels_entry(
-        uri: str,
-        name: str,
-        channel: int,
-        grid: str,
-        display: str,
-        # grid_position: tuple[int, int],
-    ) -> MoBIECollectionEntry:
+    uri: str,
+    name: str,
+    channel: int,
+    grid: str,
+    display: str,
+    # grid_position: tuple[int, int],
+) -> MoBIECollectionEntry:
     return MoBIECollectionEntry(
         uri=uri,
         name=name,
@@ -50,13 +68,14 @@ def _create_labels_entry(
         # grid_position=grid_position,
     )
 
+
 def _create_spots_entry(
-        uri: str,
-        name: str,
-        grid: str,
-        display: str,
-        # grid_position: tuple[int, int],
-    ) -> MoBIECollectionEntry:
+    uri: str,
+    name: str,
+    grid: str,
+    display: str,
+    # grid_position: tuple[int, int],
+) -> MoBIECollectionEntry:
     return MoBIECollectionEntry(
         uri=uri,
         name=name,
@@ -66,6 +85,7 @@ def _create_spots_entry(
         display=display,
         # grid_position=grid_position,
     )
+
 
 def plate(
     plate_zarr_path: ExistingDirectory,
@@ -100,6 +120,7 @@ def plate(
     df = collection_dataframe(mobie_collection_entries)
     output_path = Path(output_directory) / "mobie_collection.csv"
     df.to_csv(output_path, index=False)
+
 
 def folder(
     input_directory: ExistingDirectory,
@@ -141,6 +162,7 @@ def folder(
     # output_path = output_directory / "mobie_collection.csv"
     # df.to_csv(output_path, index=False)
 
+
 def create_plate_project(
     plate_zarr_path: ExistingDirectory,
     output_directory: ExistingDirectory,
@@ -177,44 +199,187 @@ def create_plate_project(
     ]
     logger.info(f"Channel names: {channel_names}")
 
-    # format: sources[sub_path][channel_name] = pathdict (name: Path)
-    sources = defaultdict(lambda: defaultdict(dict))
+    # Read per-channel contrast limits from OME-Zarr metadata of the first well
+    contrast_limits: dict[str, list[float]] = {}
+    for ch in first_well_image.channels_meta.channels:
+        v = ch.channel_visualisation
+        contrast_limits[ch.label] = [v.start or 0.0, v.end or 65535.0]
+    logger.info(f"Contrast limits: {contrast_limits}")
+
+    # sources_path[sub_path][channel_name] = dict[source_name, source_path]  (for add_sources)
+    # sources_pos[sub_path][channel_name]  = list[(source_name, col_idx, row_idx)]  (for add_merged_grid)
+    sources_path = defaultdict(lambda: defaultdict(dict))
+    sources_pos: dict = defaultdict(lambda: defaultdict(list))
     sources_per_well = defaultdict(list)
+    # label_rows[label_name] = accumulated list of row dicts
+    # label_source_names[label_name] = list of (source_name, label_path, col_idx, row_idx)
+    label_rows: dict[str, list[dict]] = defaultdict(list)
+    label_source_names: dict[str, list[tuple]] = defaultdict(list)
 
     for well_path in plate.wells_paths():
         logger.info(f"Processing well: {well_path}")
+        row_letter, col_number = well_path.split("/")
+        row_idx = plate.rows.index(row_letter)
+        col_idx = plate.columns.index(col_number)
         # add sources for each subpath and channel
         for sub_path in path_names:
             for channel in channel_names:
                 logger.info(f"  Channel: {channel}")
                 source_path = plate_zarr_path / well_path / sub_path
-                source_name = f"{well_path.replace("/", "")}_{channel}"
-                sources[sub_path][channel][source_name] = source_path
+                source_name = f"{well_path.replace('/', '')}_{channel}"
+                sources_path[sub_path][channel][source_name] = source_path
+                sources_pos[sub_path][channel].append((source_name, col_idx, row_idx))
                 sources_per_well[well_path].append(source_name)
-    
-    for sub_path, channel_dict in sources.items():
+
+        # collect label sources from the first sub_path only
+        sub_path_labels = path_names[0]
+        try:
+            field_container = open_ome_zarr_container(
+                plate_zarr_path / well_path / sub_path_labels
+            )
+            for label_name in field_container.list_labels():
+                logger.info(f"  Label: {label_name}")
+                label = field_container.get_label(label_name)
+                seg_source_name = f"{well_path.replace('/', '')}_{label_name}"
+                # BDV/MoBIE computes source extent as (N-1)*scale (center of
+                # first pixel to center of last pixel). Use the same formula so
+                # table anchor offsets stay in sync with TransformedGrid slot
+                # positions. Using N*scale instead causes 1-pixel drift per
+                # column/row that accumulates across the plate.
+                phys_w = (label.shape[-1] - 1) * label.pixel_size.x
+                phys_h = (label.shape[-2] - 1) * label.pixel_size.y
+                offset_x = col_idx * phys_w
+                offset_y = row_idx * phys_h
+                rows = compute_label_rows(
+                    label,
+                    label_image_id=seg_source_name,
+                    offset_x=offset_x,
+                    offset_y=offset_y,
+                )
+                label_rows[label_name].extend(rows)
+                label_path = (
+                    plate_zarr_path
+                    / well_path
+                    / sub_path_labels
+                    / "labels"
+                    / label_name
+                )
+                label_source_names[label_name].append(
+                    (seg_source_name, label_path, col_idx, row_idx, phys_w, phys_h)
+                )
+        except Exception as exc:
+            logger.warning(f"  Could not read labels for {well_path}: {exc}")
+
+    for sub_path, channel_dict in sources_path.items():
         for channel_index, channel_name in enumerate(channel_names):
-            logger.info(f"Adding source for subpath {sub_path}, channel {channel_name}...")
+            logger.info(
+                f"Adding source for subpath {sub_path}, channel {channel_name}..."
+            )
             plate_dataset.add_sources(
                 path_dict=channel_dict[channel_name],
                 channel_index=channel_index,
                 data_format="ome.zarr",
             )
-            plate_dataset.add_merged_grid(
-                name=f"merged_grid_{sub_path}_{channel_name}",
-                sources=list(channel_dict[channel_name]),
+            if plate_dataset.model.views["default"].sourceTransforms is None:
+                plate_dataset.model.views["default"].sourceTransforms = []
+            if plate_dataset.model.views["default"].sourceDisplays is None:
+                plate_dataset.model.views["default"].sourceDisplays = []
+            pos_list = sources_pos[sub_path][channel_name]
+            merged_name = f"merged_grid_{sub_path}_{channel_name}"
+            # Use margin=0 so grid slots sit at exactly col*phys_w, row*phys_h –
+            # matching the table anchor coordinates and the label TransformedGrid.
+            plate_dataset.model.views["default"].sourceTransforms.append(
+                MergedGrid(
+                    mergedGrid=MergedGrid1(
+                        sources=[sn for sn, _, _ in pos_list],
+                        positions=[(c, r) for _, c, r in pos_list],
+                        mergedGridSourceName=merged_name,
+                        margin=0.0,
+                    )
+                )
             )
-    
+            cl = contrast_limits.get(channel_name, [0.0, 65535.0])
+            plate_dataset.model.views["default"].sourceDisplays.append(
+                ImageDisplay(
+                    imageDisplay=ImageDisplay1(
+                        name=merged_name,
+                        color="white",
+                        opacity=1.0,
+                        contrastLimits=cl,
+                        sources=[merged_name],
+                    )
+                )
+            )
+
     # Add region view containing all wells
     plate_dataset.add_region_view(
         name="all_wells",
         map_of_sources=sources_per_well,
     )
 
+    # Add label segmentation sources (shared combined table per label name).
+    # A TransformedGrid sourceTransform (margin=0) positions each per-well source
+    # at its correct grid slot using the same formula as the intensity MergedGrid.
+    # Unlike MergedGrid, TransformedGrid keeps each source independent so label
+    # IDs (all starting at 1 per well) never collide.
+    for label_name, source_entries in label_source_names.items():
+        table_dir = plate_dataset.path / "tables" / label_name
+        write_segmentation_table(label_rows[label_name], table_dir)
+
+        if plate_dataset.model.views["default"].sourceTransforms is None:
+            plate_dataset.model.views["default"].sourceTransforms = []
+        if plate_dataset.model.views["default"].sourceDisplays is None:
+            plate_dataset.model.views["default"].sourceDisplays = []
+
+        all_seg_source_names: list[str] = []
+        nested_sources: list[list[str]] = []
+        grid_positions: list[tuple[int, int]] = []
+
+        for (
+            seg_source_name,
+            label_path,
+            col_idx,
+            row_idx,
+            _phys_w,
+            _phys_h,
+        ) in source_entries:
+            add_segmentation_source(
+                dataset=plate_dataset,
+                source_name=seg_source_name,
+                source_path=label_path,
+                table_dir=table_dir,
+            )
+            all_seg_source_names.append(seg_source_name)
+            nested_sources.append([seg_source_name])
+            grid_positions.append((col_idx, row_idx))
+
+        plate_dataset.model.views["default"].sourceTransforms.append(
+            TransformedGrid(
+                transformedGrid=TransformedGrid1(
+                    nestedSources=nested_sources,
+                    positions=grid_positions,
+                    margin=0.0,
+                )
+            )
+        )
+        plate_dataset.model.views["default"].sourceDisplays.append(
+            SegmentationDisplay(
+                segmentationDisplay=SegmentationDisplay1(
+                    name=label_name,
+                    sources=all_seg_source_names,
+                    opacity=0.5,
+                    lut="glasbey",
+                )
+            )
+        )
+
+    # Normalise path separators
+    normalized_sources = {}
+    for sname, source in plate_dataset.model.sources.items():
+        source_data = source.model_dump(exclude_none=True, by_alias=True)
+        normalized_sources[sname] = Source(**normalize_relative_paths(source_data))
+    plate_dataset.model.sources = normalized_sources
 
     plate_dataset.save()
     project.save()
-    # add sources for each well and channel
-    # add merged grid view for each channel, containing all well sources for that channel
-    # add sources for labels
-
+    return project

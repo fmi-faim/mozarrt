@@ -1,6 +1,6 @@
 from cyclopts import App
 
-from mozarrt.collect import create_plate_project, folder, plate
+from mozarrt.collect import create_plate_project
 from mozarrt.folder import project
 
 app = App()
@@ -14,5 +14,6 @@ folder_app = App(
 )
 
 folder_app.command(project)
+plate_app.command(create_plate_project)
 app.command(plate_app)
 app.command(folder_app)
