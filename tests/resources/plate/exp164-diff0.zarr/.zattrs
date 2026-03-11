@@ -1,0 +1,903 @@
+{
+    "plate": {
+        "acquisitions": [
+            {
+                "id": 1
+            }
+        ],
+        "columns": [
+            {
+                "name": "03"
+            },
+            {
+                "name": "04"
+            },
+            {
+                "name": "05"
+            },
+            {
+                "name": "06"
+            },
+            {
+                "name": "07"
+            },
+            {
+                "name": "08"
+            },
+            {
+                "name": "09"
+            },
+            {
+                "name": "10"
+            },
+            {
+                "name": "11"
+            },
+            {
+                "name": "12"
+            },
+            {
+                "name": "13"
+            },
+            {
+                "name": "14"
+            },
+            {
+                "name": "15"
+            },
+            {
+                "name": "16"
+            },
+            {
+                "name": "17"
+            },
+            {
+                "name": "18"
+            },
+            {
+                "name": "19"
+            },
+            {
+                "name": "20"
+            },
+            {
+                "name": "21"
+            },
+            {
+                "name": "22"
+            }
+        ],
+        "name": "exp164-diff0",
+        "rows": [
+            {
+                "name": "C"
+            },
+            {
+                "name": "D"
+            },
+            {
+                "name": "E"
+            },
+            {
+                "name": "F"
+            },
+            {
+                "name": "G"
+            },
+            {
+                "name": "H"
+            },
+            {
+                "name": "I"
+            },
+            {
+                "name": "J"
+            },
+            {
+                "name": "K"
+            },
+            {
+                "name": "L"
+            },
+            {
+                "name": "M"
+            },
+            {
+                "name": "N"
+            }
+        ],
+        "version": "0.4",
+        "wells": [
+            {
+                "columnIndex": 0,
+                "path": "C/03",
+                "rowIndex": 0
+            },
+            {
+                "columnIndex": 1,
+                "path": "C/04",
+                "rowIndex": 0
+            },
+            {
+                "columnIndex": 3,
+                "path": "C/06",
+                "rowIndex": 0
+            },
+            {
+                "columnIndex": 5,
+                "path": "C/08",
+                "rowIndex": 0
+            },
+            {
+                "columnIndex": 8,
+                "path": "C/11",
+                "rowIndex": 0
+            },
+            {
+                "columnIndex": 9,
+                "path": "C/12",
+                "rowIndex": 0
+            },
+            {
+                "columnIndex": 11,
+                "path": "C/14",
+                "rowIndex": 0
+            },
+            {
+                "columnIndex": 13,
+                "path": "C/16",
+                "rowIndex": 0
+            },
+            {
+                "columnIndex": 15,
+                "path": "C/18",
+                "rowIndex": 0
+            },
+            {
+                "columnIndex": 17,
+                "path": "C/20",
+                "rowIndex": 0
+            },
+            {
+                "columnIndex": 18,
+                "path": "C/21",
+                "rowIndex": 0
+            },
+            {
+                "columnIndex": 0,
+                "path": "D/03",
+                "rowIndex": 1
+            },
+            {
+                "columnIndex": 1,
+                "path": "D/04",
+                "rowIndex": 1
+            },
+            {
+                "columnIndex": 5,
+                "path": "D/08",
+                "rowIndex": 1
+            },
+            {
+                "columnIndex": 6,
+                "path": "D/09",
+                "rowIndex": 1
+            },
+            {
+                "columnIndex": 8,
+                "path": "D/11",
+                "rowIndex": 1
+            },
+            {
+                "columnIndex": 9,
+                "path": "D/12",
+                "rowIndex": 1
+            },
+            {
+                "columnIndex": 10,
+                "path": "D/13",
+                "rowIndex": 1
+            },
+            {
+                "columnIndex": 14,
+                "path": "D/17",
+                "rowIndex": 1
+            },
+            {
+                "columnIndex": 15,
+                "path": "D/18",
+                "rowIndex": 1
+            },
+            {
+                "columnIndex": 17,
+                "path": "D/20",
+                "rowIndex": 1
+            },
+            {
+                "columnIndex": 18,
+                "path": "D/21",
+                "rowIndex": 1
+            },
+            {
+                "columnIndex": 1,
+                "path": "E/04",
+                "rowIndex": 2
+            },
+            {
+                "columnIndex": 2,
+                "path": "E/05",
+                "rowIndex": 2
+            },
+            {
+                "columnIndex": 5,
+                "path": "E/08",
+                "rowIndex": 2
+            },
+            {
+                "columnIndex": 7,
+                "path": "E/10",
+                "rowIndex": 2
+            },
+            {
+                "columnIndex": 10,
+                "path": "E/13",
+                "rowIndex": 2
+            },
+            {
+                "columnIndex": 12,
+                "path": "E/15",
+                "rowIndex": 2
+            },
+            {
+                "columnIndex": 13,
+                "path": "E/16",
+                "rowIndex": 2
+            },
+            {
+                "columnIndex": 14,
+                "path": "E/17",
+                "rowIndex": 2
+            },
+            {
+                "columnIndex": 15,
+                "path": "E/18",
+                "rowIndex": 2
+            },
+            {
+                "columnIndex": 17,
+                "path": "E/20",
+                "rowIndex": 2
+            },
+            {
+                "columnIndex": 18,
+                "path": "E/21",
+                "rowIndex": 2
+            },
+            {
+                "columnIndex": 1,
+                "path": "F/04",
+                "rowIndex": 3
+            },
+            {
+                "columnIndex": 4,
+                "path": "F/07",
+                "rowIndex": 3
+            },
+            {
+                "columnIndex": 6,
+                "path": "F/09",
+                "rowIndex": 3
+            },
+            {
+                "columnIndex": 7,
+                "path": "F/10",
+                "rowIndex": 3
+            },
+            {
+                "columnIndex": 8,
+                "path": "F/11",
+                "rowIndex": 3
+            },
+            {
+                "columnIndex": 9,
+                "path": "F/12",
+                "rowIndex": 3
+            },
+            {
+                "columnIndex": 10,
+                "path": "F/13",
+                "rowIndex": 3
+            },
+            {
+                "columnIndex": 11,
+                "path": "F/14",
+                "rowIndex": 3
+            },
+            {
+                "columnIndex": 12,
+                "path": "F/15",
+                "rowIndex": 3
+            },
+            {
+                "columnIndex": 13,
+                "path": "F/16",
+                "rowIndex": 3
+            },
+            {
+                "columnIndex": 17,
+                "path": "F/20",
+                "rowIndex": 3
+            },
+            {
+                "columnIndex": 18,
+                "path": "F/21",
+                "rowIndex": 3
+            },
+            {
+                "columnIndex": 19,
+                "path": "F/22",
+                "rowIndex": 3
+            },
+            {
+                "columnIndex": 0,
+                "path": "G/03",
+                "rowIndex": 4
+            },
+            {
+                "columnIndex": 2,
+                "path": "G/05",
+                "rowIndex": 4
+            },
+            {
+                "columnIndex": 3,
+                "path": "G/06",
+                "rowIndex": 4
+            },
+            {
+                "columnIndex": 5,
+                "path": "G/08",
+                "rowIndex": 4
+            },
+            {
+                "columnIndex": 8,
+                "path": "G/11",
+                "rowIndex": 4
+            },
+            {
+                "columnIndex": 9,
+                "path": "G/12",
+                "rowIndex": 4
+            },
+            {
+                "columnIndex": 11,
+                "path": "G/14",
+                "rowIndex": 4
+            },
+            {
+                "columnIndex": 14,
+                "path": "G/17",
+                "rowIndex": 4
+            },
+            {
+                "columnIndex": 15,
+                "path": "G/18",
+                "rowIndex": 4
+            },
+            {
+                "columnIndex": 17,
+                "path": "G/20",
+                "rowIndex": 4
+            },
+            {
+                "columnIndex": 18,
+                "path": "G/21",
+                "rowIndex": 4
+            },
+            {
+                "columnIndex": 19,
+                "path": "G/22",
+                "rowIndex": 4
+            },
+            {
+                "columnIndex": 0,
+                "path": "H/03",
+                "rowIndex": 5
+            },
+            {
+                "columnIndex": 5,
+                "path": "H/08",
+                "rowIndex": 5
+            },
+            {
+                "columnIndex": 7,
+                "path": "H/10",
+                "rowIndex": 5
+            },
+            {
+                "columnIndex": 8,
+                "path": "H/11",
+                "rowIndex": 5
+            },
+            {
+                "columnIndex": 10,
+                "path": "H/13",
+                "rowIndex": 5
+            },
+            {
+                "columnIndex": 11,
+                "path": "H/14",
+                "rowIndex": 5
+            },
+            {
+                "columnIndex": 12,
+                "path": "H/15",
+                "rowIndex": 5
+            },
+            {
+                "columnIndex": 15,
+                "path": "H/18",
+                "rowIndex": 5
+            },
+            {
+                "columnIndex": 16,
+                "path": "H/19",
+                "rowIndex": 5
+            },
+            {
+                "columnIndex": 17,
+                "path": "H/20",
+                "rowIndex": 5
+            },
+            {
+                "columnIndex": 0,
+                "path": "I/03",
+                "rowIndex": 6
+            },
+            {
+                "columnIndex": 1,
+                "path": "I/04",
+                "rowIndex": 6
+            },
+            {
+                "columnIndex": 2,
+                "path": "I/05",
+                "rowIndex": 6
+            },
+            {
+                "columnIndex": 3,
+                "path": "I/06",
+                "rowIndex": 6
+            },
+            {
+                "columnIndex": 4,
+                "path": "I/07",
+                "rowIndex": 6
+            },
+            {
+                "columnIndex": 6,
+                "path": "I/09",
+                "rowIndex": 6
+            },
+            {
+                "columnIndex": 7,
+                "path": "I/10",
+                "rowIndex": 6
+            },
+            {
+                "columnIndex": 8,
+                "path": "I/11",
+                "rowIndex": 6
+            },
+            {
+                "columnIndex": 9,
+                "path": "I/12",
+                "rowIndex": 6
+            },
+            {
+                "columnIndex": 11,
+                "path": "I/14",
+                "rowIndex": 6
+            },
+            {
+                "columnIndex": 12,
+                "path": "I/15",
+                "rowIndex": 6
+            },
+            {
+                "columnIndex": 13,
+                "path": "I/16",
+                "rowIndex": 6
+            },
+            {
+                "columnIndex": 14,
+                "path": "I/17",
+                "rowIndex": 6
+            },
+            {
+                "columnIndex": 15,
+                "path": "I/18",
+                "rowIndex": 6
+            },
+            {
+                "columnIndex": 16,
+                "path": "I/19",
+                "rowIndex": 6
+            },
+            {
+                "columnIndex": 17,
+                "path": "I/20",
+                "rowIndex": 6
+            },
+            {
+                "columnIndex": 18,
+                "path": "I/21",
+                "rowIndex": 6
+            },
+            {
+                "columnIndex": 19,
+                "path": "I/22",
+                "rowIndex": 6
+            },
+            {
+                "columnIndex": 1,
+                "path": "J/04",
+                "rowIndex": 7
+            },
+            {
+                "columnIndex": 2,
+                "path": "J/05",
+                "rowIndex": 7
+            },
+            {
+                "columnIndex": 3,
+                "path": "J/06",
+                "rowIndex": 7
+            },
+            {
+                "columnIndex": 4,
+                "path": "J/07",
+                "rowIndex": 7
+            },
+            {
+                "columnIndex": 5,
+                "path": "J/08",
+                "rowIndex": 7
+            },
+            {
+                "columnIndex": 6,
+                "path": "J/09",
+                "rowIndex": 7
+            },
+            {
+                "columnIndex": 7,
+                "path": "J/10",
+                "rowIndex": 7
+            },
+            {
+                "columnIndex": 8,
+                "path": "J/11",
+                "rowIndex": 7
+            },
+            {
+                "columnIndex": 9,
+                "path": "J/12",
+                "rowIndex": 7
+            },
+            {
+                "columnIndex": 10,
+                "path": "J/13",
+                "rowIndex": 7
+            },
+            {
+                "columnIndex": 12,
+                "path": "J/15",
+                "rowIndex": 7
+            },
+            {
+                "columnIndex": 13,
+                "path": "J/16",
+                "rowIndex": 7
+            },
+            {
+                "columnIndex": 15,
+                "path": "J/18",
+                "rowIndex": 7
+            },
+            {
+                "columnIndex": 17,
+                "path": "J/20",
+                "rowIndex": 7
+            },
+            {
+                "columnIndex": 18,
+                "path": "J/21",
+                "rowIndex": 7
+            },
+            {
+                "columnIndex": 19,
+                "path": "J/22",
+                "rowIndex": 7
+            },
+            {
+                "columnIndex": 0,
+                "path": "K/03",
+                "rowIndex": 8
+            },
+            {
+                "columnIndex": 1,
+                "path": "K/04",
+                "rowIndex": 8
+            },
+            {
+                "columnIndex": 2,
+                "path": "K/05",
+                "rowIndex": 8
+            },
+            {
+                "columnIndex": 3,
+                "path": "K/06",
+                "rowIndex": 8
+            },
+            {
+                "columnIndex": 6,
+                "path": "K/09",
+                "rowIndex": 8
+            },
+            {
+                "columnIndex": 7,
+                "path": "K/10",
+                "rowIndex": 8
+            },
+            {
+                "columnIndex": 8,
+                "path": "K/11",
+                "rowIndex": 8
+            },
+            {
+                "columnIndex": 10,
+                "path": "K/13",
+                "rowIndex": 8
+            },
+            {
+                "columnIndex": 11,
+                "path": "K/14",
+                "rowIndex": 8
+            },
+            {
+                "columnIndex": 12,
+                "path": "K/15",
+                "rowIndex": 8
+            },
+            {
+                "columnIndex": 13,
+                "path": "K/16",
+                "rowIndex": 8
+            },
+            {
+                "columnIndex": 14,
+                "path": "K/17",
+                "rowIndex": 8
+            },
+            {
+                "columnIndex": 15,
+                "path": "K/18",
+                "rowIndex": 8
+            },
+            {
+                "columnIndex": 16,
+                "path": "K/19",
+                "rowIndex": 8
+            },
+            {
+                "columnIndex": 19,
+                "path": "K/22",
+                "rowIndex": 8
+            },
+            {
+                "columnIndex": 4,
+                "path": "L/07",
+                "rowIndex": 9
+            },
+            {
+                "columnIndex": 6,
+                "path": "L/09",
+                "rowIndex": 9
+            },
+            {
+                "columnIndex": 7,
+                "path": "L/10",
+                "rowIndex": 9
+            },
+            {
+                "columnIndex": 10,
+                "path": "L/13",
+                "rowIndex": 9
+            },
+            {
+                "columnIndex": 11,
+                "path": "L/14",
+                "rowIndex": 9
+            },
+            {
+                "columnIndex": 12,
+                "path": "L/15",
+                "rowIndex": 9
+            },
+            {
+                "columnIndex": 13,
+                "path": "L/16",
+                "rowIndex": 9
+            },
+            {
+                "columnIndex": 14,
+                "path": "L/17",
+                "rowIndex": 9
+            },
+            {
+                "columnIndex": 16,
+                "path": "L/19",
+                "rowIndex": 9
+            },
+            {
+                "columnIndex": 18,
+                "path": "L/21",
+                "rowIndex": 9
+            },
+            {
+                "columnIndex": 19,
+                "path": "L/22",
+                "rowIndex": 9
+            },
+            {
+                "columnIndex": 0,
+                "path": "M/03",
+                "rowIndex": 10
+            },
+            {
+                "columnIndex": 1,
+                "path": "M/04",
+                "rowIndex": 10
+            },
+            {
+                "columnIndex": 2,
+                "path": "M/05",
+                "rowIndex": 10
+            },
+            {
+                "columnIndex": 4,
+                "path": "M/07",
+                "rowIndex": 10
+            },
+            {
+                "columnIndex": 5,
+                "path": "M/08",
+                "rowIndex": 10
+            },
+            {
+                "columnIndex": 6,
+                "path": "M/09",
+                "rowIndex": 10
+            },
+            {
+                "columnIndex": 8,
+                "path": "M/11",
+                "rowIndex": 10
+            },
+            {
+                "columnIndex": 9,
+                "path": "M/12",
+                "rowIndex": 10
+            },
+            {
+                "columnIndex": 11,
+                "path": "M/14",
+                "rowIndex": 10
+            },
+            {
+                "columnIndex": 13,
+                "path": "M/16",
+                "rowIndex": 10
+            },
+            {
+                "columnIndex": 14,
+                "path": "M/17",
+                "rowIndex": 10
+            },
+            {
+                "columnIndex": 16,
+                "path": "M/19",
+                "rowIndex": 10
+            },
+            {
+                "columnIndex": 18,
+                "path": "M/21",
+                "rowIndex": 10
+            },
+            {
+                "columnIndex": 19,
+                "path": "M/22",
+                "rowIndex": 10
+            },
+            {
+                "columnIndex": 0,
+                "path": "N/03",
+                "rowIndex": 11
+            },
+            {
+                "columnIndex": 1,
+                "path": "N/04",
+                "rowIndex": 11
+            },
+            {
+                "columnIndex": 3,
+                "path": "N/06",
+                "rowIndex": 11
+            },
+            {
+                "columnIndex": 4,
+                "path": "N/07",
+                "rowIndex": 11
+            },
+            {
+                "columnIndex": 5,
+                "path": "N/08",
+                "rowIndex": 11
+            },
+            {
+                "columnIndex": 6,
+                "path": "N/09",
+                "rowIndex": 11
+            },
+            {
+                "columnIndex": 7,
+                "path": "N/10",
+                "rowIndex": 11
+            },
+            {
+                "columnIndex": 8,
+                "path": "N/11",
+                "rowIndex": 11
+            },
+            {
+                "columnIndex": 9,
+                "path": "N/12",
+                "rowIndex": 11
+            },
+            {
+                "columnIndex": 10,
+                "path": "N/13",
+                "rowIndex": 11
+            },
+            {
+                "columnIndex": 12,
+                "path": "N/15",
+                "rowIndex": 11
+            },
+            {
+                "columnIndex": 13,
+                "path": "N/16",
+                "rowIndex": 11
+            },
+            {
+                "columnIndex": 14,
+                "path": "N/17",
+                "rowIndex": 11
+            },
+            {
+                "columnIndex": 15,
+                "path": "N/18",
+                "rowIndex": 11
+            },
+            {
+                "columnIndex": 16,
+                "path": "N/19",
+                "rowIndex": 11
+            },
+            {
+                "columnIndex": 19,
+                "path": "N/22",
+                "rowIndex": 11
+            }
+        ]
+    }
+}
