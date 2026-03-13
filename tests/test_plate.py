@@ -118,10 +118,16 @@ def test_combined_table_columns(minimal_plate, tmp_path):
         "bb_min_y",
         "bb_max_x",
         "bb_max_y",
+        "well",
+        "plate_name",
     }
     assert required.issubset(df.columns), (
         f"Missing columns: {required - set(df.columns)}"
     )
+    # well values should match well paths (e.g. "A/01", "A/02")
+    assert set(df["well"].unique()) == {"A/01", "A/02"}
+    # plate_name should match the plate zarr directory name
+    assert (df["plate_name"] == minimal_plate.name).all()
 
 
 def test_combined_table_row_count(minimal_plate, tmp_path):

@@ -255,6 +255,8 @@ def create_plate_project(
                     label_image_id=seg_source_name,
                     offset_x=offset_x,
                     offset_y=offset_y,
+                    well=well_path,
+                    plate_name=plate_zarr_path.name,
                 )
                 label_rows[label_name].extend(rows)
                 label_path = (

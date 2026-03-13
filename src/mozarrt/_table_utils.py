@@ -53,6 +53,8 @@ def compute_label_rows(
     offset_x: float = 0.0,
     offset_y: float = 0.0,
     offset_z: float = 0.0,
+    well: str | None = None,
+    plate_name: str | None = None,
 ) -> list[dict]:
     """Compute per-label rows with anchors and bounding boxes.
 
@@ -66,6 +68,10 @@ def compute_label_rows(
     offset_x, offset_y, offset_z:
         Physical-unit offsets to add to all spatial coordinates (used when
         placing individual fields into a grid, e.g. HCS plates).
+    well:
+        Well path string (e.g. ``"C/03"``), added as a ``well`` column.
+    plate_name:
+        Plate name (e.g. ``"exp164-diff0"``), added as a ``plate_name`` column.
 
     Returns
     -------
@@ -123,6 +129,10 @@ def compute_label_rows(
             }
         if label_image_id is not None:
             row["label_image_id"] = label_image_id
+        if well is not None:
+            row["well"] = well
+        if plate_name is not None:
+            row["plate_name"] = plate_name
         rows.append(row)
     return rows
 

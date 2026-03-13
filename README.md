@@ -54,6 +54,16 @@ Example:
 
 - `pixi run -e py312 mozarrt folder project D:/data/my-plate-export D:/data/mobie-project`
 
+## Plate-based OME-Zarr support
+
+If your OME-Zarr datasets are organised as plate-based exports (e.g. `A/01/`, `A/02/`), you can use the `create_plate_project` function to generate a MoBIE project with one dataset per plate and sources grouped by well.
+
+- `pixi run -e py312 mozarrt plate create-plate-project <input_plate_folder> <output_project_folder>`
+
+Example:
+
+- `pixi run -e py312 mozarrt plate create-plate-project "./tests/resources/plate/exp164-diff0.zarr" "./tmp_plate"`
+
 ## Open the generated project in Fiji (MoBIE)
 
 1. Start Fiji.
