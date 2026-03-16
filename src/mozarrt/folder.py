@@ -22,11 +22,13 @@ if TYPE_CHECKING:
 
 def project(
     input_directory: ExistingDirectory,
-    output_directory: ExistingDirectory,
+    output_directory: Path,
     /,
     *,
     description: str | None = None,
 ):
+    output_directory = Path(output_directory)
+    output_directory.mkdir(parents=True, exist_ok=True)
     project: Project = Project(output_directory)
     project.initialize_model(
         description=description or "Folder Project",

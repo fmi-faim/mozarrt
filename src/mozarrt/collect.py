@@ -165,9 +165,11 @@ def folder(
 
 def create_plate_project(
     plate_zarr_path: ExistingDirectory,
-    output_directory: ExistingDirectory,
+    output_directory: Path,
     /,
 ) -> Project:
+    output_directory = Path(output_directory)
+    output_directory.mkdir(parents=True, exist_ok=True)
     plate: OmeZarrPlate = open_ome_zarr_plate(plate_zarr_path)
     logger.info(f"Creating MoBIE Project for plate at {plate_zarr_path}")
     # Initialize Project
