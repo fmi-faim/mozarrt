@@ -140,7 +140,12 @@ def compute_label_rows(
 def write_segmentation_table(rows: list[dict], table_dir: Path) -> Path:
     """Write *rows* to ``table_dir/default.tsv``.  Returns *table_dir*."""
     table_dir.mkdir(parents=True, exist_ok=True)
-    pd.DataFrame(rows).to_csv(table_dir / "default.tsv", sep="\t", index=False)
+    df = pd.DataFrame(rows)
+    priority = [c for c in ("label_id", "well", "plate_name") if c in df.columns]
+    rest = [c for c in df.columns if c not in priority]
+    df = df[priority + rest]
+    df.to_csv(table_dir / "default.tsv", sep="\t", index=False)
+    return table_dir
     return table_dir
 
 

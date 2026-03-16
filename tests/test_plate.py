@@ -102,7 +102,7 @@ def test_combined_label_table_exists(minimal_plate, tmp_path):
 
 
 def test_combined_table_columns(minimal_plate, tmp_path):
-    """Combined table must have label_id, anchor_x/y, bb columns, label_image_id."""
+    """Combined table must have label_id, anchor_x/y, bb columns, well, plate_name."""
     out = tmp_path / "mobie"
     create_plate_project(minimal_plate, out)
 
@@ -113,7 +113,6 @@ def test_combined_table_columns(minimal_plate, tmp_path):
         "label_id",
         "anchor_x",
         "anchor_y",
-        "label_image_id",
         "bb_min_x",
         "bb_min_y",
         "bb_max_x",
@@ -123,6 +122,9 @@ def test_combined_table_columns(minimal_plate, tmp_path):
     }
     assert required.issubset(df.columns), (
         f"Missing columns: {required - set(df.columns)}"
+    )
+    assert "label_image_id" not in df.columns, (
+        "label_image_id should not be in plate table"
     )
     # well values should match well paths (e.g. "A/01", "A/02")
     assert set(df["well"].unique()) == {"A/01", "A/02"}
@@ -151,8 +153,8 @@ def test_grid_offset_applied_correctly(minimal_plate, tmp_path):
     table_path = out / minimal_plate.name / "tables" / LABEL_NAME / "default.tsv"
     df = pd.read_csv(table_path, sep="\t")
 
-    well01 = df[df["label_image_id"] == f"A01_{LABEL_NAME}"].sort_values("anchor_x")
-    well02 = df[df["label_image_id"] == f"A02_{LABEL_NAME}"].sort_values("anchor_x")
+    well01 = df[df["well"] == "A/01"].sort_values("anchor_x")
+    well02 = df[df["well"] == "A/02"].sort_values("anchor_x")
 
     assert len(well01) == 2, f"Expected 2 rows for A/01, got {len(well01)}"
     assert len(well02) == 2, f"Expected 2 rows for A/02, got {len(well02)}"
@@ -167,19 +169,18 @@ def test_grid_offset_applied_correctly(minimal_plate, tmp_path):
         )
 
 
-def test_label_image_id_matches_per_well_source_name(minimal_plate, tmp_path):
-    """label_image_id in each table row must match the per-well segmentation source name."""
+def test_well_column_matches_well_paths(minimal_plate, tmp_path):
+    """well column in each table row must match the well path (e.g. 'A/01')."""
     out = tmp_path / "mobie"
     create_plate_project(minimal_plate, out)
 
     table_path = out / minimal_plate.name / "tables" / LABEL_NAME / "default.tsv"
     df = pd.read_csv(table_path, sep="\t")
 
-    # Per-well source names have the form "<row><col>_<label_name>"
-    expected_ids = {f"A01_{LABEL_NAME}", f"A02_{LABEL_NAME}"}
-    found_ids = set(df["label_image_id"].unique())
+    expected_ids = {"A/01", "A/02"}
+    found_ids = set(df["well"].unique())
     assert found_ids == expected_ids, (
-        f"Expected label_image_id values {expected_ids}, found {found_ids}"
+        f"Expected well values {expected_ids}, found {found_ids}"
     )
 
 
@@ -205,10 +206,10 @@ def test_segmentation_display_in_default_view(minimal_plate, tmp_path):
     )
 
 
-def test_segmentation_source_tabledata_points_to_combined_table(
+def test_segmentation_source_tabledata_points_to_per_well_table(
     minimal_plate, tmp_path
 ):
-    """Each per-well segmentation source should point to the shared combined table dir."""
+    """Each per-well segmentation source should point to its own per-well table dir."""
     out = tmp_path / "mobie"
     create_plate_project(minimal_plate, out)
 
@@ -221,7 +222,14 @@ def test_segmentation_source_tabledata_points_to_combined_table(
         src_dict = source.model_dump(exclude_none=True)
         assert "segmentation" in src_dict
         table_rel = src_dict["segmentation"]["tableData"]["tsv"]["relativePath"]
-        # All label sources must point to the same shared table directory
-        assert table_rel.endswith(f"tables/{LABEL_NAME}"), (
+        # Each label source must point to its own per-well table subdirectory
+        expected_suffix = f"tables/{LABEL_NAME}/{source_name}"
+        assert table_rel.endswith(expected_suffix), (
             f"Source {source_name} points to unexpected table dir: {table_rel}"
         )
+
+    # Combined table for analysis must also exist
+    combined = out / minimal_plate.name / "tables" / LABEL_NAME / "default.tsv"
+    assert combined.exists(), (
+        "Combined analysis table must exist at tables/<label>/default.tsv"
+    )

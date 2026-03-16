@@ -211,9 +211,11 @@ def create_plate_project(
     sources_path = defaultdict(lambda: defaultdict(dict))
     sources_pos: dict = defaultdict(lambda: defaultdict(list))
     sources_per_well = defaultdict(list)
-    # label_rows[label_name] = accumulated list of row dicts
+    # label_rows[label_name] = accumulated list of row dicts for combined (analysis) table
+    # label_well_rows[(label_name, source_name)] = list of row dicts for per-well table
     # label_source_names[label_name] = list of (source_name, label_path, col_idx, row_idx)
     label_rows: dict[str, list[dict]] = defaultdict(list)
+    label_well_rows: dict[tuple, list[dict]] = {}
     label_source_names: dict[str, list[tuple]] = defaultdict(list)
 
     for well_path in plate.wells_paths():
@@ -248,17 +250,29 @@ def create_plate_project(
                 # column/row that accumulates across the plate.
                 phys_w = (label.shape[-1] - 1) * label.pixel_size.x
                 phys_h = (label.shape[-2] - 1) * label.pixel_size.y
+                # Per-well table: LOCAL coordinates (no offset).
+                # MoBIE applies the TransformedGrid translation automatically
+                # during navigation – adding offset here would double it and
+                # cause the viewer to jump too far right/down for all wells
+                # after the first.
+                local_rows = compute_label_rows(
+                    label,
+                    well=well_path,
+                    plate_name=plate_zarr_path.name,
+                )
+                label_well_rows[(label_name, seg_source_name)] = local_rows
+                # Combined analysis table: GLOBAL coordinates (offset added)
+                # so positions are comparable across the full plate.
                 offset_x = col_idx * phys_w
                 offset_y = row_idx * phys_h
-                rows = compute_label_rows(
+                global_rows = compute_label_rows(
                     label,
-                    label_image_id=seg_source_name,
                     offset_x=offset_x,
                     offset_y=offset_y,
                     well=well_path,
                     plate_name=plate_zarr_path.name,
                 )
-                label_rows[label_name].extend(rows)
+                label_rows[label_name].extend(global_rows)
                 label_path = (
                     plate_zarr_path
                     / well_path
@@ -325,8 +339,9 @@ def create_plate_project(
     # Unlike MergedGrid, TransformedGrid keeps each source independent so label
     # IDs (all starting at 1 per well) never collide.
     for label_name, source_entries in label_source_names.items():
-        table_dir = plate_dataset.path / "tables" / label_name
-        write_segmentation_table(label_rows[label_name], table_dir)
+        combined_table_dir = plate_dataset.path / "tables" / label_name
+        # Combined table for data analysis/export (all wells, all rows)
+        write_segmentation_table(label_rows[label_name], combined_table_dir)
 
         if plate_dataset.model.views["default"].sourceTransforms is None:
             plate_dataset.model.views["default"].sourceTransforms = []
@@ -345,11 +360,18 @@ def create_plate_project(
             _phys_w,
             _phys_h,
         ) in source_entries:
+            # Per-well table: only rows for this well so MoBIE loads 1-3 rows
+            # per source instead of the full combined table for every source.
+            per_well_table_dir = (
+                plate_dataset.path / "tables" / label_name / seg_source_name
+            )
+            well_rows = label_well_rows.get((label_name, seg_source_name), [])
+            write_segmentation_table(well_rows, per_well_table_dir)
             add_segmentation_source(
                 dataset=plate_dataset,
                 source_name=seg_source_name,
                 source_path=label_path,
-                table_dir=table_dir,
+                table_dir=per_well_table_dir,
             )
             all_seg_source_names.append(seg_source_name)
             nested_sources.append([seg_source_name])
