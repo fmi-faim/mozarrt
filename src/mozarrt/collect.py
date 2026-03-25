@@ -214,10 +214,8 @@ def create_plate_project(
     sources_pos: dict = defaultdict(lambda: defaultdict(list))
     sources_per_well = defaultdict(list)
     # label_rows[label_name] = accumulated list of row dicts for combined (analysis) table
-    # label_well_rows[(label_name, source_name)] = list of row dicts for per-well table
     # label_source_names[label_name] = list of (source_name, label_path, col_idx, row_idx)
     label_rows: dict[str, list[dict]] = defaultdict(list)
-    label_well_rows: dict[tuple, list[dict]] = {}
     label_source_names: dict[str, list[tuple]] = defaultdict(list)
 
     for well_path in plate.wells_paths():
@@ -267,13 +265,13 @@ def create_plate_project(
                         f"  Label '{label_name}' in {well_path} has no objects; skipping source."
                     )
                     continue
-                label_well_rows[(label_name, seg_source_name)] = local_rows
                 # Combined analysis table: GLOBAL coordinates (offset added)
                 # so positions are comparable across the full plate.
                 offset_x = col_idx * phys_w
                 offset_y = row_idx * phys_h
                 global_rows = compute_label_rows(
                     label,
+                    label_image_id=seg_source_name,
                     offset_x=offset_x,
                     offset_y=offset_y,
                     well=well_path,
@@ -372,18 +370,11 @@ def create_plate_project(
             _phys_w,
             _phys_h,
         ) in source_entries:
-            # Per-well table: only rows for this well so MoBIE loads 1-3 rows
-            # per source instead of the full combined table for every source.
-            per_well_table_dir = (
-                plate_dataset.path / "tables" / label_name / seg_source_name
-            )
-            well_rows = label_well_rows.get((label_name, seg_source_name), [])
-            write_segmentation_table(well_rows, per_well_table_dir)
             add_segmentation_source(
                 dataset=plate_dataset,
                 source_name=seg_source_name,
                 source_path=label_path,
-                table_dir=per_well_table_dir,
+                table_dir=combined_table_dir,
             )
             all_seg_source_names.append(seg_source_name)
             nested_sources.append([seg_source_name])

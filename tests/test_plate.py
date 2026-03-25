@@ -110,7 +110,7 @@ def test_combined_label_table_exists(minimal_plate, tmp_path):
 
 
 def test_combined_table_columns(minimal_plate, tmp_path):
-    """Combined table must have label_id, anchor_x/y, bb columns, well, plate_name."""
+    """Combined table must include source id plus geometry, well and plate metadata."""
     out = tmp_path / "mobie"
     create_plate_project(minimal_plate, out)
 
@@ -119,6 +119,7 @@ def test_combined_table_columns(minimal_plate, tmp_path):
 
     required = {
         "label_id",
+        "label_image_id",
         "anchor_x",
         "anchor_y",
         "bb_min_x",
@@ -130,9 +131,6 @@ def test_combined_table_columns(minimal_plate, tmp_path):
     }
     assert required.issubset(df.columns), (
         f"Missing columns: {required - set(df.columns)}"
-    )
-    assert "label_image_id" not in df.columns, (
-        "label_image_id should not be in plate table"
     )
     # well values should match well paths (e.g. "A/01", "A/02")
     assert set(df["well"].unique()) == {"A/01", "A/02"}
@@ -214,10 +212,10 @@ def test_segmentation_display_in_default_view(minimal_plate, tmp_path):
     )
 
 
-def test_segmentation_source_tabledata_points_to_per_well_table(
+def test_segmentation_source_tabledata_points_to_combined_table(
     minimal_plate, tmp_path
 ):
-    """Each per-well segmentation source should point to its own per-well table dir."""
+    """Each segmentation source should point to the shared combined label table dir."""
     out = tmp_path / "mobie"
     create_plate_project(minimal_plate, out)
 
@@ -230,9 +228,8 @@ def test_segmentation_source_tabledata_points_to_per_well_table(
         src_dict = source.model_dump(exclude_none=True)
         assert "segmentation" in src_dict
         table_rel = src_dict["segmentation"]["tableData"]["tsv"]["relativePath"]
-        # Each label source must point to its own per-well table subdirectory
-        expected_suffix = f"tables/{LABEL_NAME}/{source_name}"
-        assert table_rel.endswith(expected_suffix), (
+        expected_path = f"tables/{LABEL_NAME}"
+        assert table_rel == expected_path, (
             f"Source {source_name} points to unexpected table dir: {table_rel}"
         )
 
