@@ -262,6 +262,11 @@ def create_plate_project(
                     well=well_path,
                     plate_name=plate_zarr_path.name,
                 )
+                if not local_rows:
+                    logger.warning(
+                        f"  Label '{label_name}' in {well_path} has no objects; skipping source."
+                    )
+                    continue
                 label_well_rows[(label_name, seg_source_name)] = local_rows
                 # Combined analysis table: GLOBAL coordinates (offset added)
                 # so positions are comparable across the full plate.
@@ -341,6 +346,11 @@ def create_plate_project(
     # Unlike MergedGrid, TransformedGrid keeps each source independent so label
     # IDs (all starting at 1 per well) never collide.
     for label_name, source_entries in label_source_names.items():
+        if len(source_entries) < 2:
+            logger.warning(
+                f"Skipping label view '{label_name}': need at least 2 non-empty wells for TransformedGrid, got {len(source_entries)}."
+            )
+            continue
         combined_table_dir = plate_dataset.path / "tables" / label_name
         # Combined table for data analysis/export (all wells, all rows)
         write_segmentation_table(label_rows[label_name], combined_table_dir)

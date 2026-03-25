@@ -28,6 +28,14 @@ def _add_label(container, label_name: str = LABEL_NAME) -> None:
     label.set_array(arr)
 
 
+def _add_empty_label(container, label_name: str = LABEL_NAME) -> None:
+    """Add a label dataset that contains only background (no objects)."""
+    label = container.derive_label(label_name, overwrite=True)
+    arr = label.get_as_numpy()
+    arr[...] = 0
+    label.set_array(arr)
+
+
 @pytest.fixture(scope="module")
 def minimal_plate(tmp_path_factory) -> Path:
     """Create a minimal 2-well plate: rows=A, cols=01/02, 1 channel, 1 label.
@@ -232,4 +240,48 @@ def test_segmentation_source_tabledata_points_to_per_well_table(
     combined = out / minimal_plate.name / "tables" / LABEL_NAME / "default.tsv"
     assert combined.exists(), (
         "Combined analysis table must exist at tables/<label>/default.tsv"
+    )
+
+
+def test_empty_label_well_is_skipped_from_segmentation_sources(tmp_path):
+    """Wells with labels but no objects should not create segmentation sources."""
+    plate_path = tmp_path / "empty_label_plate.zarr"
+    plate = create_empty_plate(plate_path, name="empty_label_plate")
+
+    # Well A/01 has objects.
+    well_01 = plate.add_well(row="A", column="01")
+    store_01 = well_01.add_image(image_path="0")
+    container_01 = create_empty_ome_zarr(
+        store_01,
+        shape=(1, WELL_SIZE, WELL_SIZE),
+        axes_names=["c", "y", "x"],
+        channels_meta=["DAPI"],
+        levels=1,
+        pixelsize=PIXEL_SIZE,
+    )
+    _add_label(container_01)
+
+    # Well A/02 has label dataset but no objects.
+    well_02 = plate.add_well(row="A", column="02")
+    store_02 = well_02.add_image(image_path="0")
+    container_02 = create_empty_ome_zarr(
+        store_02,
+        shape=(1, WELL_SIZE, WELL_SIZE),
+        axes_names=["c", "y", "x"],
+        channels_meta=["DAPI"],
+        levels=1,
+        pixelsize=PIXEL_SIZE,
+    )
+    _add_empty_label(container_02)
+
+    out = tmp_path / "mobie"
+    create_plate_project(plate_path, out)
+
+    dataset = Dataset(out / plate_path.name)
+    dataset.load()
+
+    seg_sources = [n for n in dataset.model.sources if LABEL_NAME in n]
+    assert seg_sources == [], (
+        "Expected no segmentation sources when fewer than 2 non-empty wells "
+        f"are available, found: {seg_sources}"
     )

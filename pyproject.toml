@@ -38,6 +38,7 @@ pandas = ">=2.3.3,<3"
 cyclopts = ">=4.5.0,<5"
 loguru = ">=0.7.3,<0.8"
 natsort = ">=8.4.0,<9"
+tqdm = ">=4.67.3,<5"
 
 [tool.pixi.feature.build.dependencies]
 hatch = ">=1.16.3,<2"
