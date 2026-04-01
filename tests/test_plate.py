@@ -215,7 +215,7 @@ def test_segmentation_display_in_default_view(minimal_plate, tmp_path):
 def test_segmentation_source_tabledata_points_to_combined_table(
     minimal_plate, tmp_path
 ):
-    """Each segmentation source should point to the shared combined label table dir."""
+    """Each segmentation source should point to its own sub-table under the label dir."""
     out = tmp_path / "mobie"
     create_plate_project(minimal_plate, out)
 
@@ -228,8 +228,8 @@ def test_segmentation_source_tabledata_points_to_combined_table(
         src_dict = source.model_dump(exclude_none=True)
         assert "segmentation" in src_dict
         table_rel = src_dict["segmentation"]["tableData"]["tsv"]["relativePath"]
-        expected_path = f"tables/{LABEL_NAME}"
-        assert table_rel == expected_path, (
+        expected_prefix = f"tables/{LABEL_NAME}/"
+        assert table_rel.startswith(expected_prefix), (
             f"Source {source_name} points to unexpected table dir: {table_rel}"
         )
 
@@ -282,3 +282,32 @@ def test_empty_label_well_is_skipped_from_segmentation_sources(tmp_path):
         "Expected no segmentation sources when fewer than 2 non-empty wells "
         f"are available, found: {seg_sources}"
     )
+
+
+def test_create_plate_project_without_c03_well(tmp_path):
+    """Project creation should not fail when the nominal C/03 well is missing."""
+    plate_path = tmp_path / "sparse_plate.zarr"
+    plate = create_empty_plate(plate_path, name="sparse_plate")
+
+    # Purposefully omit C/03 while still keeping row C and column 03 present via D/03.
+    # Add another well in row C to ensure C/03 is the missing intersection.
+    for row, col in (("D", "03"), ("C", "04")):
+        well = plate.add_well(row=row, column=col)
+        image_store = well.add_image(image_path="0")
+        create_empty_ome_zarr(
+            image_store,
+            shape=(1, WELL_SIZE, WELL_SIZE),
+            axes_names=["c", "y", "x"],
+            channels_meta=["DAPI"],
+            levels=1,
+            pixelsize=PIXEL_SIZE,
+        )
+
+    out = tmp_path / "mobie"
+    create_plate_project(plate_path, out)
+
+    dataset = Dataset(out / plate_path.name)
+    dataset.load()
+
+    intensity_sources = [n for n in dataset.model.sources if "DAPI" in n]
+    assert len(intensity_sources) == 2

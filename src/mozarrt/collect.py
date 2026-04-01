@@ -190,9 +190,19 @@ def create_plate_project(
 
     plate_dataset.save()
 
-    # From the first well, get subpaths and channel names
+    # From the first existing well, get subpaths and channel names.
+    # Some plates have sparse occupancy (e.g. missing C/03), so do not assume
+    # that the first row/column combination exists as a concrete well.
+    wells_paths = list(plate.wells_paths())
+    if not wells_paths:
+        raise ValueError(
+            f"No wells found in plate '{plate_zarr_path}'. Cannot create project."
+        )
+
     # Then, for each subpath and each channel, create sources and merged grid views
-    first_well = plate.get_well(row=plate.rows[0], column=plate.columns[0])
+    first_well_path = wells_paths[0]
+    first_row, first_col = first_well_path.split("/")
+    first_well = plate.get_well(row=first_row, column=first_col)
     path_names = first_well.paths()
     logger.info(f"Path names in first well: {path_names}")
     first_well_image = first_well.get_image(path_names[0]).get_image()
@@ -216,9 +226,10 @@ def create_plate_project(
     # label_rows[label_name] = accumulated list of row dicts for combined (analysis) table
     # label_source_names[label_name] = list of (source_name, label_path, col_idx, row_idx)
     label_rows: dict[str, list[dict]] = defaultdict(list)
+    label_rows_by_source: dict[str, dict[str, list[dict]]] = defaultdict(dict)
     label_source_names: dict[str, list[tuple]] = defaultdict(list)
 
-    for well_path in plate.wells_paths():
+    for well_path in wells_paths:
         logger.info(f"Processing well: {well_path}")
         row_letter, col_number = well_path.split("/")
         row_idx = plate.rows.index(row_letter)
@@ -278,6 +289,7 @@ def create_plate_project(
                     plate_name=plate_zarr_path.name,
                 )
                 label_rows[label_name].extend(global_rows)
+                label_rows_by_source[label_name][seg_source_name] = global_rows
                 label_path = (
                     plate_zarr_path
                     / well_path
@@ -344,14 +356,17 @@ def create_plate_project(
     # Unlike MergedGrid, TransformedGrid keeps each source independent so label
     # IDs (all starting at 1 per well) never collide.
     for label_name, source_entries in label_source_names.items():
+        combined_table_dir = plate_dataset.path / "tables" / label_name
+        if label_rows[label_name]:
+            # Canonical combined table for analysis/export.
+            # Stored at tables/<label>/default.tsv (higher-level single table).
+            write_segmentation_table(label_rows[label_name], combined_table_dir)
+
         if len(source_entries) < 2:
             logger.warning(
                 f"Skipping label view '{label_name}': need at least 2 non-empty wells for TransformedGrid, got {len(source_entries)}."
             )
             continue
-        combined_table_dir = plate_dataset.path / "tables" / label_name
-        # Combined table for data analysis/export (all wells, all rows)
-        write_segmentation_table(label_rows[label_name], combined_table_dir)
 
         if plate_dataset.model.views["default"].sourceTransforms is None:
             plate_dataset.model.views["default"].sourceTransforms = []
@@ -370,11 +385,16 @@ def create_plate_project(
             _phys_w,
             _phys_h,
         ) in source_entries:
+            source_table_dir = combined_table_dir / seg_source_name
+            write_segmentation_table(
+                label_rows_by_source[label_name][seg_source_name],
+                source_table_dir,
+            )
             add_segmentation_source(
                 dataset=plate_dataset,
                 source_name=seg_source_name,
                 source_path=label_path,
-                table_dir=combined_table_dir,
+                table_dir=source_table_dir,
             )
             all_seg_source_names.append(seg_source_name)
             nested_sources.append([seg_source_name])

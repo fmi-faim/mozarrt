@@ -8,3 +8,4 @@ dist
 .coverage
 tmp*
 tests/resources/plate/exp164-diff0.zarr
+exp*
