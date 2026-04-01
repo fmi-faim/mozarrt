@@ -289,7 +289,7 @@ def create_plate_project(
                     plate_name=plate_zarr_path.name,
                 )
                 label_rows[label_name].extend(global_rows)
-                label_rows_by_source[label_name][seg_source_name] = global_rows
+                label_rows_by_source[label_name][seg_source_name] = local_rows
                 label_path = (
                     plate_zarr_path
                     / well_path
