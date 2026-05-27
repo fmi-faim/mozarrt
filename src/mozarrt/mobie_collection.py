@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Literal
 
+
 @dataclass
 class MoBIECollectionEntry:
     uri: str
@@ -26,5 +27,6 @@ class MoBIECollectionEntry:
 def collection_dataframe(entries: list[MoBIECollectionEntry]):
     """Convert a list of MoBIECollectionEntry to a pandas DataFrame."""
     import pandas as pd
+
     df = pd.DataFrame(entries)
     return df

@@ -7,22 +7,21 @@ import pandas as pd
 from mozarrt.folder import project
 
 
-@pytest.mark.parametrize("dimension,expected_is2d,num_sources", [
-    ("2d", True, 9),
-    ("3d", False, 5),
-])
+@pytest.mark.parametrize(
+    "dimension,expected_is2d,num_sources",
+    [
+        ("2d", True, 9),
+        ("3d", False, 5),
+    ],
+)
 def test_folder_dimension(tmp_path, dimension, expected_is2d, num_sources):
     """Test that 2D/3D datasets are correctly identified and processed."""
     # Get the path to the test resources
     test_resources = Path(__file__).parent / "resources" / dimension
-    
+
     # Run the project function
-    project(
-        test_resources,
-        tmp_path,
-        description=f"Test {dimension.upper()} project"
-    )
-    
+    project(test_resources, tmp_path, description=f"Test {dimension.upper()} project")
+
     # Verify that the project was created
     assert (tmp_path / "project.json").exists()
 
@@ -34,7 +33,7 @@ def test_folder_dimension(tmp_path, dimension, expected_is2d, num_sources):
     dataset_dir = tmp_path / dimension
     assert dataset_dir.exists()
     assert (dataset_dir / "dataset.json").exists()
-    
+
     # Load the dataset using mobiedantic to verify it's marked correctly
     dataset = Dataset(dataset_dir)
     dataset.load()
@@ -45,29 +44,32 @@ def test_folder_dimension(tmp_path, dimension, expected_is2d, num_sources):
     assert len(dataset.model.sources) == num_sources
 
 
-@pytest.mark.parametrize("dimension,expected_table_rows", [
-    ("2d", 4),
-    ("3d", 4),
-])
+@pytest.mark.parametrize(
+    "dimension,expected_table_rows",
+    [
+        ("2d", 4),
+        ("3d", 4),
+    ],
+)
 def test_folder_dimension_tables(tmp_path, dimension, expected_table_rows):
     """Test that the all_positions table is created for 2D/3D datasets."""
     test_resources = Path(__file__).parent / "resources" / dimension
-    
+
     project(
         test_resources,
         tmp_path,
-        description=f"Test {dimension.upper()} project with tables"
+        description=f"Test {dimension.upper()} project with tables",
     )
-    
+
     # Load the dataset using mobiedantic
     dataset_dir = tmp_path / dimension
     dataset = Dataset(dataset_dir)
     dataset.load()
-    
+
     # Verify that the table was created
     table_path = dataset_dir / "tables" / "all_positions" / "default.tsv"
     assert table_path.exists()
-    
+
     # Read the table and verify it has the correct number of positions
-    table = pd.read_csv(table_path, sep='\t')
+    table = pd.read_csv(table_path, sep="\t")
     assert len(table) == expected_table_rows

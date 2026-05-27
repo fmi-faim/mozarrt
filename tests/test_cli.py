@@ -1,5 +1,6 @@
 from mozarrt.cli import app
 
+
 def test_cli_commands():
     """Test that the cyclopts CLI sub-apps are registered correctly."""
     # Check that the main app has the expected sub-apps
