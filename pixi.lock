@@ -3628,7 +3628,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/zict-3.0.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-3.23.0-pyhcf101f3_1.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/5b/ec/3a5082c434eef54686e9f2616ab451faf765f9d70ac6e07c2d3931789391/mobiedantic-0.6.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/f7/6a/32079ca2b9dad73e53c3056839dcc84acd386210d92a9c4feb4a5461323b/mobiedantic-0.6.1-py3-none-any.whl
       osx-64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_python_abi3_support-1.0-hd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.6.1-pyhd8ed1ab_0.conda
@@ -3858,7 +3858,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zlib-ng-2.3.3-h8bce59a_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zstd-1.5.7-h3eecb57_6.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/5b/ec/3a5082c434eef54686e9f2616ab451faf765f9d70ac6e07c2d3931789391/mobiedantic-0.6.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/f7/6a/32079ca2b9dad73e53c3056839dcc84acd386210d92a9c4feb4a5461323b/mobiedantic-0.6.1-py3-none-any.whl
       osx-arm64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_python_abi3_support-1.0-hd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.6.1-pyhd8ed1ab_0.conda
@@ -4089,7 +4089,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zlib-ng-2.3.3-hed4e4f5_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-hbf9d68e_6.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/5b/ec/3a5082c434eef54686e9f2616ab451faf765f9d70ac6e07c2d3931789391/mobiedantic-0.6.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/f7/6a/32079ca2b9dad73e53c3056839dcc84acd386210d92a9c4feb4a5461323b/mobiedantic-0.6.1-py3-none-any.whl
       win-64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_python_abi3_support-1.0-hd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.6.1-pyhd8ed1ab_0.conda
@@ -5023,7 +5023,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zlib-ng-2.3.3-hed4e4f5_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-hbf9d68e_6.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/5b/ec/3a5082c434eef54686e9f2616ab451faf765f9d70ac6e07c2d3931789391/mobiedantic-0.6.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/f7/6a/32079ca2b9dad73e53c3056839dcc84acd386210d92a9c4feb4a5461323b/mobiedantic-0.6.1-py3-none-any.whl
       win-64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_python_abi3_support-1.0-hd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.6.1-pyhd8ed1ab_0.conda
@@ -27095,20 +27095,12 @@ packages:
   requires_dist:
   - cyclopts>=4.5.0,<5
   - loguru>=0.7.3,<0.8
-  - mobiedantic>=0.6.0,<0.7
+  - mobiedantic>=0.6.1,<0.7
   - natsort>=8.4.0,<9
   - ngio>=0.5.3,<0.6
   - pandas>=2.3.3,<3
   - scikit-image>=0.26.0,<0.27
   requires_python: '>=3.12'
-- pypi: https://files.pythonhosted.org/packages/5b/ec/3a5082c434eef54686e9f2616ab451faf765f9d70ac6e07c2d3931789391/mobiedantic-0.6.0-py3-none-any.whl
-  name: mobiedantic
-  version: 0.6.0
-  sha256: 2e4a24c274aae8e40354e5cd46ae106a6ce93b8dcd201e7f8ed6c2292b325e4a
-  requires_dist:
-  - loguru>=0.7.3,<0.8
-  - pydantic>=2.11.7,<3
-  requires_python: '>=3.8'
 - pypi: https://files.pythonhosted.org/packages/f7/6a/32079ca2b9dad73e53c3056839dcc84acd386210d92a9c4feb4a5461323b/mobiedantic-0.6.1-py3-none-any.whl
   name: mobiedantic
   version: 0.6.1
