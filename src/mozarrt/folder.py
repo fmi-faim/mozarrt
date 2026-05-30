@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from ngio import OmeZarrContainer, Image
 
+
 def project(
     input_directory: ExistingDirectory,
     output_directory: ExistingDirectory,
@@ -31,23 +32,22 @@ def project(
     zarr_dirs = natsorted(Path(input_directory).glob("*.zarr"))
     first_zarr: OmeZarrContainer = open_ome_zarr_container(zarr_dirs[0])
     first_zarr_image: Image = first_zarr.get_image()
-    
+
     # Determine if data is 2D based on number of spatial axes (excluding channel dimension)
     axes_names = first_zarr_image.axes
     # Count spatial axes (z, y, x) - typically 2D has [y, x] and 3D has [z, y, x]
     is2d = "z" not in axes_names
     logger.info(f"Axes: {axes_names}, is2D: {is2d}")
-    
+
     dataset.initialize_with_paths(
         path_dict={},
         is2d=is2d,
     )
-    
+
     channel_names = [
         channel.label for channel in first_zarr_image.channels_meta.channels
     ]
     logger.info(f"Channel names: {channel_names}")
-
 
     # format: sources[channel_name] = pathdict (name: Path)
     sources = defaultdict(dict)
@@ -66,18 +66,23 @@ def project(
 
     for channel_index, channel_name in enumerate(channel_names):
         logger.info(f"Adding source for channel {channel_name}...")
-        dataset.add_sources(
+        dataset.add_image_sources(
             path_dict=sources[channel_name],
             channel_index=channel_index,
             data_format="ome.zarr",
         )
+        merged_grid_name = f"merged_grid_{channel_name}"
         dataset.add_merged_grid(
-            name=f"merged_grid_{channel_name}",
+            name=merged_grid_name,
             sources=list(sources[channel_name]),
         )
-    
+        dataset.add_image_display(
+            name=merged_grid_name,
+            sources=[merged_grid_name],
+        )
+
     # Add region view containing all positions
-    dataset.add_region_view(
+    dataset.add_region_display(
         name="all_positions",
         map_of_sources=position_map,
     )

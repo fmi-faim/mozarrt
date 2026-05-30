@@ -1,7 +1,7 @@
 from cyclopts import App
 
-from mozarrt.collect import create_plate_project, folder, plate
-from mozarrt.folder import project
+from mozarrt.folder import project as folder_project
+from mozarrt.plate import project as plate_project
 
 app = App()
 plate_app = App(
@@ -13,6 +13,7 @@ folder_app = App(
     help="Actions that take a folder with OME-Zarr datasets as input",
 )
 
-folder_app.command(project)
+folder_app.command(folder_project)
+plate_app.command(plate_project)
 app.command(plate_app)
 app.command(folder_app)
