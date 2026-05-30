@@ -52,7 +52,9 @@ def project(
             f"'{output_directory}'."
         )
         project.model.datasets = [
-            dataset for dataset in project.model.datasets if dataset.root != dataset_name
+            dataset
+            for dataset in project.model.datasets
+            if dataset.root != dataset_name
         ]
         existing_dataset_path = output_path / dataset_name
         if existing_dataset_path.exists():

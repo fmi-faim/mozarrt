@@ -160,23 +160,24 @@ def test_plate_dataset_fixture(plate_dataset: OmeZarrPlate):
     ]
 
     # assert that C/03 has one label image containing two distinct label values.
+    # Labels are stored with a singleton leading dimension (1, Y, X) as per OME-Zarr convention.
     c_03_image = image_dict["C/03/fov0"]
-    assert c_03_image.get_label("object").shape == (64, 64)
+    assert c_03_image.get_label("object").shape == (1, 64, 64)
     # distinct label values should be 0, 1, and 2 (background and two objects)
     assert set(np.unique(c_03_image.get_label("object").get_array())) == {0, 1, 2}
 
     c_04_image = image_dict["C/04/fov0"]
-    assert c_04_image.get_label("object").shape == (64, 64)
+    assert c_04_image.get_label("object").shape == (1, 64, 64)
     # distinct label values should be 0 (background only)
     assert set(np.unique(c_04_image.get_label("object").get_array())) == {0}
 
     d_03_image = image_dict["D/03/fov0"]
-    assert d_03_image.get_label("object").shape == (64, 64)
+    assert d_03_image.get_label("object").shape == (1, 64, 64)
     # distinct label values should be 1 (full image object)
     assert set(np.unique(d_03_image.get_label("object").get_array())) == {1}
 
     d_04_image = image_dict["D/04/fov0"]
-    assert d_04_image.get_label("object").shape == (64, 64)
+    assert d_04_image.get_label("object").shape == (1, 64, 64)
     # distinct label values should be 0 and 1 (background and one object)
     assert set(np.unique(d_04_image.get_label("object").get_array())) == {0, 1}
 
@@ -244,7 +245,14 @@ def test_plate_project_force_overwrite_dataset(
 
 
 def test_plate_segmentation_tables(plate_dataset: OmeZarrPlate, tmp_path: Path):
-    """Test that per-well segmentation tables are generated with required columns."""
+    """Test that per-well segmentation tables are generated with required columns.
+
+    # TODO: Expand this test to cover all combinations of:
+    #   - 2D label arrays (shape (Y, X))
+    #   - 3D label arrays (shape (Z, Y, X) or singleton (1, Y, X))
+    #   - with bbox measurements
+    #   - without bbox measurements
+    """
     output_directory = tmp_path / "plate_project_output"
     output_directory.mkdir(exist_ok=True)
     project(
@@ -259,7 +267,20 @@ def test_plate_segmentation_tables(plate_dataset: OmeZarrPlate, tmp_path: Path):
         "D03_object": 1,
         "D04_object": 1,
     }
-    required_columns = ["label", "centroid-0", "centroid-1"]
+    # Labels are stored as (1, Y, X) — regionprops_table treats them as 3D,
+    # producing 3-component centroids and 6 bbox columns.
+    required_columns = [
+        "label",
+        "centroid-0",
+        "centroid-1",
+        "centroid-2",
+        "bbox-0",
+        "bbox-1",
+        "bbox-2",
+        "bbox-3",
+        "bbox-4",
+        "bbox-5",
+    ]
 
     for table_name, expected_rows in expected_rows_per_table.items():
         table_path = dataset_dir / "tables" / table_name / "default.tsv"
