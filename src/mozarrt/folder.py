@@ -6,32 +6,10 @@ from natsort import natsorted
 from ngio import open_ome_zarr_container
 from pathlib import Path
 from typing import TYPE_CHECKING
+from .utils import update_channel_display_metadata
 
 if TYPE_CHECKING:
     from ngio import OmeZarrContainer, Image
-
-
-def _hex_rgb_to_rgba(color_hex: str | None) -> str | None:
-    if not color_hex:
-        return None
-    normalized = color_hex.lstrip("#")
-    if len(normalized) != 6:
-        return None
-    try:
-        red = int(normalized[0:2], 16)
-        green = int(normalized[2:4], 16)
-        blue = int(normalized[4:6], 16)
-    except ValueError:
-        return None
-    return f"{red}-{green}-{blue}-255"
-
-
-def _channel_visualisation(channel_meta):
-    return getattr(
-        channel_meta,
-        "channel_visualization",
-        getattr(channel_meta, "channel_visualisation", None),
-    )
 
 
 def project(
@@ -85,35 +63,19 @@ def project(
         position: OmeZarrContainer = open_ome_zarr_container(zarr_dir)
         logger.info(position.meta)
         image = position.get_image()
-        channels_meta = getattr(position.meta, "channel_meta", None) or getattr(
-            position.meta, "channels_meta", None
-        )
-        for channel_index, channel_name in enumerate(channel_names):
+        for channel_name in channel_names:
             logger.info(f"  Channel: {channel_name}")
             source_path = zarr_dir
             source_name = f"{zarr_dir.stem}_{channel_name}"
             sources[channel_name][source_name] = source_path
             position_map[zarr_dir.stem].append(source_name)
-            if (
-                channel_name not in channel_colors
-                and channels_meta is not None
-                and len(channels_meta.channels) > channel_index
-            ):
-                channel_vis = _channel_visualisation(channels_meta.channels[channel_index])
-                if channel_vis is not None:
-                    color = _hex_rgb_to_rgba(channel_vis.color)
-                    if color is not None:
-                        channel_colors[channel_name] = color
-            channel_vis = _channel_visualisation(
-                image.meta.channels_meta.channels[channel_index]
+            update_channel_display_metadata(
+                channel_name=channel_name,
+                channel_colors=channel_colors,
+                channel_contrast_limits=channel_contrast_limits,
+                container_channels_meta=position.meta.channels_meta,
+                image_channels_meta=image.meta.channels_meta,
             )
-            if channel_vis is not None:
-                channel_contrast_limits[channel_name][0] = min(
-                    channel_contrast_limits[channel_name][0], channel_vis.start
-                )
-                channel_contrast_limits[channel_name][1] = max(
-                    channel_contrast_limits[channel_name][1], channel_vis.end
-                )
 
     for channel_index, channel_name in enumerate(channel_names):
         logger.info(f"Adding source for channel {channel_name}...")
