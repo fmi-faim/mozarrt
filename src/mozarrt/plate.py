@@ -10,6 +10,29 @@ from skimage.measure import regionprops_table
 from ngio import open_ome_zarr_plate, OmeZarrPlate
 
 
+def _hex_rgb_to_rgba(color_hex: str | None) -> str | None:
+    if not color_hex:
+        return None
+    normalized = color_hex.lstrip("#")
+    if len(normalized) != 6:
+        return None
+    try:
+        red = int(normalized[0:2], 16)
+        green = int(normalized[2:4], 16)
+        blue = int(normalized[4:6], 16)
+    except ValueError:
+        return None
+    return f"{red}-{green}-{blue}-255"
+
+
+def _channel_visualisation(channel_meta):
+    return getattr(
+        channel_meta,
+        "channel_visualization",
+        getattr(channel_meta, "channel_visualisation", None),
+    )
+
+
 def _required_centroid_columns(label_array_ndim: int) -> list[str]:
     return ["label", "centroid-0", "centroid-1", "centroid-2"]
 
@@ -88,6 +111,10 @@ def project(
     # format: sources[sub_path][channel_name] = pathdict (name: Path)
     image_sources = defaultdict(lambda: defaultdict(dict))
     image_sources_per_well = defaultdict(list)
+    channel_colors = defaultdict(dict)
+    channel_contrast_limits = defaultdict(
+        lambda: defaultdict(lambda: [float("inf"), float("-inf")])
+    )
     label_sources = defaultdict(lambda: defaultdict(dict))
     label_sources_per_well = defaultdict(list)
     label_tables = defaultdict(lambda: defaultdict(dict))
@@ -99,12 +126,38 @@ def project(
         for sub_path in well_object.paths():
             logger.info(f"  Processing subpath: {sub_path}")
             image_container = well_object.get_image(sub_path)
-            for channel in channel_names:
+            image = image_container.get_image()
+            channels_meta = getattr(image_container.meta, "channel_meta", None) or getattr(
+                image_container.meta, "channels_meta", None
+            )
+            for channel_index, channel in enumerate(channel_names):
                 logger.info(f"    Channel: {channel}")
                 source_path = plate_zarr_path / well_path / sub_path
                 source_name = f"{well_path.replace('/', '')}_{sub_path}_{channel}"
                 image_sources[sub_path][channel][source_name] = source_path
                 image_sources_per_well[well_path].append(source_name)
+                if (
+                    channel not in channel_colors[sub_path]
+                    and channels_meta is not None
+                    and len(channels_meta.channels) > channel_index
+                ):
+                    channel_vis = _channel_visualisation(
+                        channels_meta.channels[channel_index]
+                    )
+                    if channel_vis is not None:
+                        color = _hex_rgb_to_rgba(channel_vis.color)
+                        if color is not None:
+                            channel_colors[sub_path][channel] = color
+                channel_vis = _channel_visualisation(
+                    image.meta.channels_meta.channels[channel_index]
+                )
+                if channel_vis is not None:
+                    channel_contrast_limits[sub_path][channel][0] = min(
+                        channel_contrast_limits[sub_path][channel][0], channel_vis.start
+                    )
+                    channel_contrast_limits[sub_path][channel][1] = max(
+                        channel_contrast_limits[sub_path][channel][1], channel_vis.end
+                    )
 
             logger.info(f"  Image container labels: {image_container.list_labels()}")
             labels = image_container.list_labels()
@@ -150,9 +203,14 @@ def project(
                 name=merged_grid_name,
                 sources=list(channel_dict[channel_name]),
             )
+            contrast_limits = channel_contrast_limits[sub_path][channel_name]
+            if contrast_limits[0] == float("inf"):
+                contrast_limits = [0.0, 255.0]
             plate_dataset.add_image_display(
                 name=merged_grid_name,
                 sources=[merged_grid_name],
+                color=channel_colors[sub_path].get(channel_name, "white"),
+                contrast_limits=(contrast_limits[0], contrast_limits[1]),
             )
 
     for sub_path, label_dict in label_sources.items():

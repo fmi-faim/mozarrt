@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+from collections import defaultdict
 from mobiedantic import Dataset, Project
 from ngio import (
     create_empty_plate,
@@ -338,3 +339,71 @@ def test_plate_project_exclude_labels_ignores_missing(
     for table_name in ["C03_object", "C04_object", "D03_object", "D04_object"]:
         table_path = dataset_dir / "tables" / table_name / "default.tsv"
         assert table_path.exists()
+
+
+def _hex_rgb_to_rgba(color_hex: str) -> str:
+    return (
+        f"{int(color_hex[0:2], 16)}-"
+        f"{int(color_hex[2:4], 16)}-"
+        f"{int(color_hex[4:6], 16)}-255"
+    )
+
+
+def test_plate_image_display_uses_channel_metadata(
+    plate_dataset: OmeZarrPlate, tmp_path: Path
+):
+    output_directory = tmp_path / "plate_project_output_channel_metadata"
+    output_directory.mkdir(exist_ok=True)
+
+    first_well = plate_dataset.get_well(
+        row=plate_dataset.rows[0], column=plate_dataset.columns[0]
+    )
+    first_image = first_well.get_image(first_well.paths()[0]).get_image()
+    channel_names = [channel.label for channel in first_image.channels_meta.channels]
+
+    expected_color = defaultdict(dict)
+    expected_contrast_limits = defaultdict(
+        lambda: defaultdict(lambda: [float("inf"), float("-inf")])
+    )
+    for _, well_object in plate_dataset.get_wells().items():
+        for sub_path in well_object.paths():
+            image_container = well_object.get_image(sub_path)
+            image = image_container.get_image()
+            for channel_index, channel_name in enumerate(channel_names):
+                channel_visualisation = image_container.meta.channels_meta.channels[
+                    channel_index
+                ].channel_visualisation
+                expected_color[sub_path][channel_name] = _hex_rgb_to_rgba(
+                    channel_visualisation.color
+                )
+                image_channel_visualisation = image.meta.channels_meta.channels[
+                    channel_index
+                ].channel_visualisation
+                expected_contrast_limits[sub_path][channel_name][0] = min(
+                    expected_contrast_limits[sub_path][channel_name][0],
+                    image_channel_visualisation.start,
+                )
+                expected_contrast_limits[sub_path][channel_name][1] = max(
+                    expected_contrast_limits[sub_path][channel_name][1],
+                    image_channel_visualisation.end,
+                )
+
+    project(
+        tmp_path / "test_plate.zarr",
+        output_directory,
+    )
+
+    dataset = Dataset(output_directory / "test_plate.zarr")
+    dataset.load()
+    image_displays = {
+        source_display.imageDisplay.name.root: source_display.imageDisplay
+        for source_display in dataset.model.views["default"].sourceDisplays
+        if hasattr(source_display, "imageDisplay")
+    }
+
+    for sub_path, sub_path_channel_meta in expected_contrast_limits.items():
+        for channel_name, contrast_limits in sub_path_channel_meta.items():
+            display_name = f"merged_grid_{sub_path}_{channel_name}"
+            display = image_displays[display_name]
+            assert display.color == expected_color[sub_path][channel_name]
+            assert display.contrastLimits == pytest.approx(contrast_limits)
