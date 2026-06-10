@@ -1,6 +1,7 @@
 import pytest
 from mobiedantic import Project, Dataset
 from pathlib import Path
+from ngio import open_ome_zarr_container
 
 import pandas as pd
 
@@ -73,3 +74,66 @@ def test_folder_dimension_tables(tmp_path, dimension, expected_table_rows):
     # Read the table and verify it has the correct number of positions
     table = pd.read_csv(table_path, sep="\t")
     assert len(table) == expected_table_rows
+
+
+def _hex_rgb_to_rgba(color_hex: str) -> str:
+    return (
+        f"{int(color_hex[0:2], 16)}-"
+        f"{int(color_hex[2:4], 16)}-"
+        f"{int(color_hex[4:6], 16)}-255"
+    )
+
+
+@pytest.mark.parametrize("dimension", ["2d", "3d"])
+def test_folder_image_display_uses_channel_metadata(tmp_path, dimension):
+    test_resources = Path(__file__).parent / "resources" / dimension
+    zarr_dirs = sorted(test_resources.glob("*.zarr"))
+    first_container = open_ome_zarr_container(zarr_dirs[0])
+    channel_names = [
+        channel.label for channel in first_container.get_image().channels_meta.channels
+    ]
+
+    expected_color = {}
+    expected_contrast_limits = {
+        channel_name: [float("inf"), float("-inf")] for channel_name in channel_names
+    }
+    for zarr_dir in zarr_dirs:
+        container = open_ome_zarr_container(zarr_dir)
+        image = container.get_image()
+        for channel_index, channel_name in enumerate(channel_names):
+            channel_visualisation = container.meta.channels_meta.channels[
+                channel_index
+            ].channel_visualisation
+            expected_color[channel_name] = _hex_rgb_to_rgba(channel_visualisation.color)
+            image_channel_visualisation = image.meta.channels_meta.channels[
+                channel_index
+            ].channel_visualisation
+            expected_contrast_limits[channel_name][0] = min(
+                expected_contrast_limits[channel_name][0],
+                image_channel_visualisation.start,
+            )
+            expected_contrast_limits[channel_name][1] = max(
+                expected_contrast_limits[channel_name][1],
+                image_channel_visualisation.end,
+            )
+
+    project(
+        test_resources,
+        tmp_path,
+        description=f"Test {dimension.upper()} project with channel metadata",
+    )
+
+    dataset = Dataset(tmp_path / dimension)
+    dataset.load()
+    image_displays = {
+        source_display.imageDisplay.name.root: source_display.imageDisplay
+        for source_display in dataset.model.views["default"].sourceDisplays
+        if hasattr(source_display, "imageDisplay")
+    }
+
+    for channel_name in channel_names:
+        display = image_displays[f"merged_grid_{channel_name}"]
+        assert display.color == expected_color[channel_name]
+        assert display.contrastLimits == pytest.approx(
+            expected_contrast_limits[channel_name]
+        )

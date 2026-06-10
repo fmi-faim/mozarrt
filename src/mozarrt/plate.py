@@ -8,6 +8,7 @@ from loguru import logger
 from skimage.measure import regionprops_table
 
 from ngio import open_ome_zarr_plate, OmeZarrPlate
+from .utils import update_channel_display_metadata
 
 
 def _required_centroid_columns(label_array_ndim: int) -> list[str]:
@@ -88,6 +89,10 @@ def project(
     # format: sources[sub_path][channel_name] = pathdict (name: Path)
     image_sources = defaultdict(lambda: defaultdict(dict))
     image_sources_per_well = defaultdict(list)
+    channel_colors = defaultdict(dict)
+    channel_contrast_limits = defaultdict(
+        lambda: defaultdict(lambda: [float("inf"), float("-inf")])
+    )
     label_sources = defaultdict(lambda: defaultdict(dict))
     label_sources_per_well = defaultdict(list)
     label_tables = defaultdict(lambda: defaultdict(dict))
@@ -99,12 +104,20 @@ def project(
         for sub_path in well_object.paths():
             logger.info(f"  Processing subpath: {sub_path}")
             image_container = well_object.get_image(sub_path)
+            image = image_container.get_image()
             for channel in channel_names:
                 logger.info(f"    Channel: {channel}")
                 source_path = plate_zarr_path / well_path / sub_path
                 source_name = f"{well_path.replace('/', '')}_{sub_path}_{channel}"
                 image_sources[sub_path][channel][source_name] = source_path
                 image_sources_per_well[well_path].append(source_name)
+                update_channel_display_metadata(
+                    channel_name=channel,
+                    channel_colors=channel_colors[sub_path],
+                    channel_contrast_limits=channel_contrast_limits[sub_path],
+                    container_channels_meta=image_container.meta.channels_meta,
+                    image_channels_meta=image.meta.channels_meta,
+                )
 
             logger.info(f"  Image container labels: {image_container.list_labels()}")
             labels = image_container.list_labels()
@@ -150,9 +163,14 @@ def project(
                 name=merged_grid_name,
                 sources=list(channel_dict[channel_name]),
             )
+            contrast_limits = channel_contrast_limits[sub_path][channel_name]
+            if contrast_limits[0] == float("inf"):
+                contrast_limits = [0.0, 255.0]
             plate_dataset.add_image_display(
                 name=merged_grid_name,
                 sources=[merged_grid_name],
+                color=channel_colors[sub_path].get(channel_name, "white"),
+                contrast_limits=(contrast_limits[0], contrast_limits[1]),
             )
 
     for sub_path, label_dict in label_sources.items():
