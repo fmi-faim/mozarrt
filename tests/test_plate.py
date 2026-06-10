@@ -407,3 +407,52 @@ def test_plate_image_display_uses_channel_metadata(
             display = image_displays[display_name]
             assert display.color == expected_color[sub_path][channel_name]
             assert display.contrastLimits == pytest.approx(contrast_limits)
+
+
+def test_plate_merged_grid_positions_follow_well_layout(
+    plate_dataset: OmeZarrPlate, tmp_path: Path
+):
+    output_directory = tmp_path / "plate_project_output_merged_grid_positions"
+    output_directory.mkdir(exist_ok=True)
+
+    project(
+        tmp_path / "test_plate.zarr",
+        output_directory,
+    )
+
+    dataset = Dataset(output_directory / "test_plate.zarr")
+    dataset.load()
+    source_transforms = dataset.model.views["default"].sourceTransforms
+
+    merged_grids = {
+        transform.mergedGrid.mergedGridSourceName.root: transform.mergedGrid
+        for transform in source_transforms
+    }
+
+    expected_positions = {
+        "C03_fov0_RNA": (0, 0),
+        "C04_fov0_RNA": (0, 1),
+        "D03_fov0_RNA": (1, 0),
+        "D04_fov0_RNA": (1, 1),
+    }
+    rna_merged_grid = merged_grids["merged_grid_fov0_RNA"]
+    assert {
+        source.root: tuple(position)
+        for source, position in zip(
+            rna_merged_grid.sources, rna_merged_grid.positions.root
+        )
+    } == expected_positions
+
+    expected_positions = {
+        "C03_fov0_object": (0, 0),
+        "C04_fov0_object": (0, 1),
+        "D03_fov0_object": (1, 0),
+        "D04_fov0_object": (1, 1),
+    }
+    object_merged_grid = merged_grids["merged_grid_fov0_object"]
+    assert {
+        source.root: tuple(position)
+        for source, position in zip(
+            object_merged_grid.sources, object_merged_grid.positions.root
+        )
+    } == expected_positions
