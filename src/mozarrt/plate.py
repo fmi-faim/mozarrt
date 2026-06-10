@@ -93,7 +93,9 @@ def project(
     channel_contrast_limits = defaultdict(
         lambda: defaultdict(lambda: [float("inf"), float("-inf")])
     )
+    image_positions = defaultdict(lambda: defaultdict(list))
     label_sources = defaultdict(lambda: defaultdict(dict))
+    label_positions = defaultdict(lambda: defaultdict(list))
     label_sources_per_well = defaultdict(list)
     label_tables = defaultdict(lambda: defaultdict(dict))
     dataset_path = output_path / dataset_name
@@ -101,6 +103,8 @@ def project(
     # loop through all wells
     for well_path, well_object in plate.get_wells().items():
         logger.info(f"Processing well: {well_path}")
+        row_name, column_name = well_path.split("/")
+        well_position = (plate.rows.index(row_name), plate.columns.index(column_name))
         for sub_path in well_object.paths():
             logger.info(f"  Processing subpath: {sub_path}")
             image_container = well_object.get_image(sub_path)
@@ -110,6 +114,7 @@ def project(
                 source_path = plate_zarr_path / well_path / sub_path
                 source_name = f"{well_path.replace('/', '')}_{sub_path}_{channel}"
                 image_sources[sub_path][channel][source_name] = source_path
+                image_positions[sub_path][channel].append(well_position)
                 image_sources_per_well[well_path].append(source_name)
                 update_channel_display_metadata(
                     channel_name=channel,
@@ -145,6 +150,7 @@ def project(
                 table_abs_path.parent.mkdir(parents=True, exist_ok=True)
                 table_df.to_csv(table_abs_path, sep="\t", index=False)
                 label_sources[sub_path][label][source_name] = source_path
+                label_positions[sub_path][label].append(well_position)
                 label_tables[sub_path][label][source_name] = table_abs_path.parent
                 label_sources_per_well[well_path].append(source_name)
 
@@ -162,6 +168,7 @@ def project(
             plate_dataset.add_merged_grid(
                 name=merged_grid_name,
                 sources=list(channel_dict[channel_name]),
+                positions=image_positions[sub_path][channel_name],
             )
             contrast_limits = channel_contrast_limits[sub_path][channel_name]
             if contrast_limits[0] == float("inf"):
@@ -185,6 +192,7 @@ def project(
             plate_dataset.add_merged_grid(
                 name=merged_grid_name,
                 sources=list(source_dict.keys()),
+                positions=label_positions[sub_path][label_name],
             )
             plate_dataset.add_segmentation_display(
                 name=merged_grid_name,
