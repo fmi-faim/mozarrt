@@ -431,8 +431,8 @@ def test_plate_merged_grid_positions_follow_well_layout(
 
     expected_positions = {
         "C03_fov0_RNA": (0, 0),
-        "C04_fov0_RNA": (0, 1),
-        "D03_fov0_RNA": (1, 0),
+        "C04_fov0_RNA": (1, 0),
+        "D03_fov0_RNA": (0, 1),
         "D04_fov0_RNA": (1, 1),
     }
     rna_merged_grid = merged_grids["merged_grid_fov0_RNA"]
@@ -445,8 +445,8 @@ def test_plate_merged_grid_positions_follow_well_layout(
 
     expected_positions = {
         "C03_fov0_object": (0, 0),
-        "C04_fov0_object": (0, 1),
-        "D03_fov0_object": (1, 0),
+        "C04_fov0_object": (1, 0),
+        "D03_fov0_object": (0, 1),
         "D04_fov0_object": (1, 1),
     }
     object_merged_grid = merged_grids["merged_grid_fov0_object"]

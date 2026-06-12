@@ -104,7 +104,7 @@ def project(
     for well_path, well_object in plate.get_wells().items():
         logger.info(f"Processing well: {well_path}")
         row_name, column_name = well_path.split("/")
-        well_position = (plate.rows.index(row_name), plate.columns.index(column_name))
+        well_position = (plate.columns.index(column_name), plate.rows.index(row_name))
         for sub_path in well_object.paths():
             logger.info(f"  Processing subpath: {sub_path}")
             image_container = well_object.get_image(sub_path)
