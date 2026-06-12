@@ -6,13 +6,10 @@ import shutil
 from mobiedantic import Project, Dataset
 from loguru import logger
 from skimage.measure import regionprops_table
+from tqdm.auto import tqdm
 
 from ngio import open_ome_zarr_plate, OmeZarrPlate
 from .utils import update_channel_display_metadata
-
-
-def _required_centroid_columns(label_array_ndim: int) -> list[str]:
-    return ["label", "centroid-0", "centroid-1", "centroid-2"]
 
 
 def project(
@@ -101,7 +98,7 @@ def project(
     dataset_path = output_path / dataset_name
 
     # loop through all wells
-    for well_path, well_object in plate.get_wells().items():
+    for well_path, well_object in tqdm(plate.get_wells().items(), desc="Processing wells"):
         logger.info(f"Processing well: {well_path}")
         row_name, column_name = well_path.split("/")
         well_position = (plate.columns.index(column_name), plate.rows.index(row_name))
@@ -124,16 +121,14 @@ def project(
                     image_channels_meta=image.meta.channels_meta,
                 )
 
-            logger.info(f"  Image container labels: {image_container.list_labels()}")
             labels = image_container.list_labels()
             for label in labels:
                 if label in excluded_label_names:
                     logger.info(f"    Skipping excluded label: {label}")
                     continue
                 logger.info(f"    Label name {label}")
-                logger.info(f"    Label meta: {image_container.get_label(label).meta}")
                 source_path = plate_zarr_path / well_path / sub_path / "labels" / label
-                logger.info(f"    Label source path: {source_path}")
+                logger.debug(f"    Label source path: {source_path}")
                 source_name = f"{well_path.replace('/', '')}_{sub_path}_{label}"
                 label_array = image_container.get_label(label).get_array()
                 table_df = pd.DataFrame(
@@ -156,7 +151,7 @@ def project(
 
     for sub_path, channel_dict in image_sources.items():
         for channel_index, channel_name in enumerate(channel_names):
-            logger.info(
+            logger.debug(
                 f"Adding source for subpath {sub_path}, channel {channel_name}..."
             )
             plate_dataset.add_image_sources(
@@ -182,7 +177,7 @@ def project(
 
     for sub_path, label_dict in label_sources.items():
         for label_name, source_dict in label_dict.items():
-            logger.info(f"Adding source for subpath {sub_path}, label {label_name}...")
+            logger.debug(f"Adding source for subpath {sub_path}, label {label_name}...")
             plate_dataset.add_segmentation_sources(
                 path_dict=source_dict,
                 table_path_dict=label_tables[sub_path][label_name],

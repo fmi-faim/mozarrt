@@ -525,6 +525,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tifffile-2026.5.15-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyh8f84b5b_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-extensions-4.15.0-h396c80c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-inspection-0.4.2-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing_extensions-4.15.0-pyhcf101f3_0.conda
@@ -535,7 +536,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/zict-3.0.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-3.23.0-pyhd8ed1ab_0.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
       osx-64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_python_abi3_support-1.0-hd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.6.1-pyhd8ed1ab_0.conda
@@ -604,6 +605,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tifffile-2026.5.15-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyh8f84b5b_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-extensions-4.15.0-h396c80c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-inspection-0.4.2-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing_extensions-4.15.0-pyhcf101f3_0.conda
@@ -757,7 +759,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zlib-ng-2.3.3-h8bce59a_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zstd-1.5.7-h3eecb57_6.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
       osx-arm64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_python_abi3_support-1.0-hd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.6.1-pyhd8ed1ab_0.conda
@@ -827,6 +829,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tifffile-2026.5.15-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyh8f84b5b_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-extensions-4.15.0-h396c80c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-inspection-0.4.2-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing_extensions-4.15.0-pyhcf101f3_0.conda
@@ -980,7 +983,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstandard-0.25.0-py312h37e1c23_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-h6491c7d_2.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
       win-64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_python_abi3_support-1.0-hd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.6.1-pyhd8ed1ab_0.conda
@@ -1051,6 +1054,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tifffile-2026.5.15-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyha7b4d00_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-extensions-4.15.0-h396c80c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-inspection-0.4.2-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing_extensions-4.15.0-pyhcf101f3_0.conda
@@ -1201,7 +1205,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/zstandard-0.25.0-py312he5662c2_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/zstd-1.5.7-hbeecb71_2.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
   jupyter:
     channels:
     - url: https://conda.anaconda.org/conda-forge/
@@ -1507,6 +1511,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tinycss2-1.4.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.3.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyh8f84b5b_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/traitlets-5.14.3-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-extensions-4.15.0-h396c80c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-inspection-0.4.2-pyhd8ed1ab_0.conda
@@ -1525,7 +1530,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/zict-3.0.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-3.23.0-pyhd8ed1ab_0.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
       osx-64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_python_abi3_support-1.0-hd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.6.1-pyhd8ed1ab_0.conda
@@ -1676,6 +1681,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tinycss2-1.4.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyh8f84b5b_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/traitlets-5.14.3-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-extensions-4.15.0-h396c80c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-inspection-0.4.2-pyhd8ed1ab_1.conda
@@ -1841,7 +1847,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zlib-ng-2.3.3-h8bce59a_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zstd-1.5.7-h3eecb57_6.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
       osx-arm64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_python_abi3_support-1.0-hd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.6.1-pyhd8ed1ab_0.conda
@@ -1983,6 +1989,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tinycss2-1.4.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.3.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyh8f84b5b_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/traitlets-5.14.3-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-extensions-4.15.0-h396c80c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-inspection-0.4.2-pyhd8ed1ab_0.conda
@@ -2153,7 +2160,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstandard-0.25.0-py313h9734d34_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-h6491c7d_2.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
       win-64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_python_abi3_support-1.0-hd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.6.1-pyhd8ed1ab_0.conda
@@ -2293,6 +2300,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tinycss2-1.4.0-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.3.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyha7b4d00_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/traitlets-5.14.3-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-extensions-4.15.0-h396c80c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-inspection-0.4.2-pyhd8ed1ab_0.conda
@@ -2456,7 +2464,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/zstandard-0.25.0-py313h5fd188c_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/zstd-1.5.7-hbeecb71_2.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
   py312:
     channels:
     - url: https://conda.anaconda.org/conda-forge/
@@ -2690,6 +2698,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tifffile-2026.5.15-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyh8f84b5b_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-extensions-4.15.0-h396c80c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-inspection-0.4.2-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing_extensions-4.15.0-pyhcf101f3_0.conda
@@ -2700,7 +2709,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/zict-3.0.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-3.23.0-pyhcf101f3_1.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
       osx-64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_python_abi3_support-1.0-hd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.6.1-pyhd8ed1ab_0.conda
@@ -2775,6 +2784,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tifffile-2026.5.15-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyh8f84b5b_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-extensions-4.15.0-h396c80c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-inspection-0.4.2-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing_extensions-4.15.0-pyhcf101f3_0.conda
@@ -2929,7 +2939,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zlib-ng-2.3.3-h8bce59a_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zstd-1.5.7-h3eecb57_6.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
       osx-arm64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_python_abi3_support-1.0-hd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.6.1-pyhd8ed1ab_0.conda
@@ -3004,6 +3014,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tifffile-2026.5.15-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyh8f84b5b_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-extensions-4.15.0-h396c80c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-inspection-0.4.2-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing_extensions-4.15.0-pyhcf101f3_0.conda
@@ -3159,7 +3170,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zlib-ng-2.3.3-hed4e4f5_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-hbf9d68e_6.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
       win-64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_python_abi3_support-1.0-hd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.6.1-pyhd8ed1ab_0.conda
@@ -3234,6 +3245,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tifffile-2026.5.15-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyha7b4d00_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-extensions-4.15.0-h396c80c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-inspection-0.4.2-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing_extensions-4.15.0-pyhcf101f3_0.conda
@@ -3385,7 +3397,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/zlib-ng-2.3.3-h0261ad2_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/zstd-1.5.7-h534d264_6.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
   py313:
     channels:
     - url: https://conda.anaconda.org/conda-forge/
@@ -3618,6 +3630,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tifffile-2026.5.15-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyh8f84b5b_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-extensions-4.15.0-h396c80c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-inspection-0.4.2-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing_extensions-4.15.0-pyhcf101f3_0.conda
@@ -3628,7 +3641,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/zict-3.0.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-3.23.0-pyhcf101f3_1.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
       osx-64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_python_abi3_support-1.0-hd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.6.1-pyhd8ed1ab_0.conda
@@ -3703,6 +3716,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tifffile-2026.5.15-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyh8f84b5b_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-extensions-4.15.0-h396c80c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-inspection-0.4.2-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing_extensions-4.15.0-pyhcf101f3_0.conda
@@ -3858,7 +3872,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zlib-ng-2.3.3-h8bce59a_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zstd-1.5.7-h3eecb57_6.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
       osx-arm64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_python_abi3_support-1.0-hd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.6.1-pyhd8ed1ab_0.conda
@@ -3933,6 +3947,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tifffile-2026.5.15-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyh8f84b5b_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-extensions-4.15.0-h396c80c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-inspection-0.4.2-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing_extensions-4.15.0-pyhcf101f3_0.conda
@@ -4089,7 +4104,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zlib-ng-2.3.3-hed4e4f5_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-hbf9d68e_6.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
       win-64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_python_abi3_support-1.0-hd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.6.1-pyhd8ed1ab_0.conda
@@ -4164,6 +4179,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tifffile-2026.5.15-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyha7b4d00_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-extensions-4.15.0-h396c80c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-inspection-0.4.2-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing_extensions-4.15.0-pyhcf101f3_0.conda
@@ -4316,7 +4332,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/zlib-ng-2.3.3-h0261ad2_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/zstd-1.5.7-h534d264_6.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
   py314:
     channels:
     - url: https://conda.anaconda.org/conda-forge/
@@ -4549,6 +4565,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tifffile-2026.5.15-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyh8f84b5b_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-extensions-4.15.0-h396c80c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-inspection-0.4.2-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing_extensions-4.15.0-pyhcf101f3_0.conda
@@ -4560,7 +4577,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/zict-3.0.0-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/zipp-3.23.0-pyhcf101f3_1.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
       osx-64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_python_abi3_support-1.0-hd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.6.1-pyhd8ed1ab_0.conda
@@ -4642,6 +4659,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tifffile-2026.5.15-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyh8f84b5b_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-extensions-4.15.0-h396c80c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-inspection-0.4.2-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing_extensions-4.15.0-pyhcf101f3_0.conda
@@ -4791,7 +4809,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zlib-ng-2.3.3-h8bce59a_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/zstd-1.5.7-h3eecb57_6.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
       osx-arm64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_python_abi3_support-1.0-hd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.6.1-pyhd8ed1ab_0.conda
@@ -4873,6 +4891,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tifffile-2026.5.15-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyh8f84b5b_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-extensions-4.15.0-h396c80c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-inspection-0.4.2-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing_extensions-4.15.0-pyhcf101f3_0.conda
@@ -5023,7 +5042,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zlib-ng-2.3.3-hed4e4f5_1.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/zstd-1.5.7-hbf9d68e_6.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
       win-64:
       - conda: https://conda.anaconda.org/conda-forge/noarch/_python_abi3_support-1.0-hd8ed1ab_2.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/aiohappyeyeballs-2.6.1-pyhd8ed1ab_0.conda
@@ -5105,6 +5124,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/noarch/tifffile-2026.5.15-pyhd8ed1ab_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/tomli-2.4.0-pyhcf101f3_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/toolz-1.1.0-pyhd8ed1ab_1.conda
+      - conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyha7b4d00_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-extensions-4.15.0-h396c80c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing-inspection-0.4.2-pyhd8ed1ab_1.conda
       - conda: https://conda.anaconda.org/conda-forge/noarch/typing_extensions-4.15.0-pyhcf101f3_0.conda
@@ -5251,7 +5271,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/win-64/zlib-ng-2.3.3-h0261ad2_1.conda
       - conda: https://conda.anaconda.org/conda-forge/win-64/zstd-1.5.7-h534d264_6.conda
       - pypi: .
-      - pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+      - pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
 packages:
 - conda: https://conda.anaconda.org/conda-forge/linux-64/_libgcc_mutex-0.1-conda_forge.tar.bz2
   sha256: fe51de6107f9edc7aa4f786a70f4a883943bc9d39b3bb7307c04c41410990726
@@ -13832,6 +13852,37 @@ packages:
   - pkg:pypi/toolz?source=hash-mapping
   size: 53978
   timestamp: 1760707830681
+- conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyh8f84b5b_1.conda
+  sha256: f3ac3dcc43f011835efe2718f5d78981935e8aa1e1d9741b63499dfdd8fa802c
+  md5: 99ee58c51aae7ee9ab947a0c6ce5a4c7
+  depends:
+  - python >=3.10
+  - __unix
+  - python
+  constrains:
+  - envwrap >=0.2
+  - ipywidgets >=6.0
+  license: MPL-2.0 and MIT
+  purls:
+  - pkg:pypi/tqdm?source=compressed-mapping
+  size: 94725
+  timestamp: 1781094943144
+- conda: https://conda.anaconda.org/conda-forge/noarch/tqdm-4.68.2-pyha7b4d00_1.conda
+  sha256: f25ec3f44a3a0243c35baba3dceb1dc0e4a127e5f168ca9fa34708cee821f6b7
+  md5: f73d419741d981f9a22939d0cb68bd4a
+  depends:
+  - python >=3.10
+  - colorama
+  - __win
+  - python
+  constrains:
+  - envwrap >=0.2
+  - ipywidgets >=6.0
+  license: MPL-2.0 and MIT
+  purls:
+  - pkg:pypi/tqdm?source=compressed-mapping
+  size: 94422
+  timestamp: 1781095005329
 - conda: https://conda.anaconda.org/conda-forge/noarch/traitlets-5.14.3-pyhd8ed1ab_1.conda
   sha256: f39a5620c6e8e9e98357507262a7869de2ae8cc07da8b7f84e517c9fd6c2b959
   md5: 019a7385be9af33791c989871317e1ed
@@ -27100,11 +27151,12 @@ packages:
   - ngio>=0.5.3,<0.6
   - pandas>=2.3.3,<3
   - scikit-image>=0.26.0,<0.27
+  - tqdm>=4.68.2,<5
   requires_python: '>=3.12'
-- pypi: https://files.pythonhosted.org/packages/a1/94/749ebd1186d20d52304a3771e1167d4675b6fb04fd4ca6651e094dbc68b5/mobiedantic-0.7.0-py3-none-any.whl
+- pypi: https://files.pythonhosted.org/packages/9f/2e/bd58b5dd8bc79860657b6c421538cb42b450804af98f90a3b435e28a66b1/mobiedantic-0.7.1-py3-none-any.whl
   name: mobiedantic
-  version: 0.7.0
-  sha256: f8d691b36aa6506f714cbde158f71713b0cbe75720d3343258da5323f645cd13
+  version: 0.7.1
+  sha256: a3ccb58639dc1c3b6caeb8f6666cb23aea37e30ec579738534e1e09364cd7f6e
   requires_dist:
   - loguru>=0.7.3,<0.8
   - pydantic>=2.11.7,<3
