@@ -115,6 +115,8 @@ def project(
     label_sources_per_well = defaultdict(list)
     label_tables = defaultdict(lambda: defaultdict(dict))
     additional_feature_tables = defaultdict(lambda: defaultdict(list))
+    well_label_table_dirs: dict[tuple[str, str, str], Path] = {}
+    ft_columns_registry: dict[tuple[str, str], dict[str, list]] = {}
     dataset_path = output_path / dataset_name
 
     # loop through all wells
@@ -170,6 +172,7 @@ def project(
                 label_positions[sub_path][label].append(well_position)
                 label_tables[sub_path][label][source_name] = table_abs_path.parent
                 label_sources_per_well[well_path].append(source_name)
+                well_label_table_dirs[(well_path, sub_path, label)] = table_abs_path.parent
 
                 if include_feature_tables:
                     feature_table_names = image_container.list_tables(
@@ -183,14 +186,30 @@ def project(
                             f"    Including feature table '{ft_name}' "
                             f"for label '{label}'"
                         )
-                        ft_df = ft.load_as_pandas_df()
+                        ft_df = ft.load_as_pandas_df().reset_index()
                         ft_filename = f"{ft_name}.tsv"
                         ft_abs_path = table_abs_path.parent / ft_filename
-                        ft_df.reset_index().to_csv(ft_abs_path, sep="\t", index=False)
+                        ft_df.to_csv(ft_abs_path, sep="\t", index=False)
+                        key = (sub_path, label)
+                        if key not in ft_columns_registry:
+                            ft_columns_registry[key] = {}
+                        if ft_name not in ft_columns_registry[key]:
+                            ft_columns_registry[key][ft_name] = list(ft_df.columns)
                         if ft_filename not in additional_feature_tables[sub_path][label]:
                             additional_feature_tables[sub_path][label].append(
                                 ft_filename
                             )
+
+    if include_feature_tables:
+        for (w_path, sp, lbl), table_dir in well_label_table_dirs.items():
+            for ft_name, columns in ft_columns_registry.get((sp, lbl), {}).items():
+                ft_path = table_dir / f"{ft_name}.tsv"
+                if not ft_path.exists():
+                    logger.info(
+                        f"Writing header-only feature table '{ft_name}' "
+                        f"for well '{w_path}', label '{lbl}'"
+                    )
+                    pd.DataFrame(columns=columns).to_csv(ft_path, sep="\t", index=False)
 
     for sub_path, channel_dict in image_sources.items():
         for channel_index, channel_name in enumerate(channel_names):

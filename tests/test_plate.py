@@ -130,31 +130,69 @@ def plate_dataset(tmp_plate_zarr_path: Path) -> OmeZarrPlate:
 def plate_dataset_with_feature_tables(
     tmp_plate_zarr_path: Path, plate_dataset: OmeZarrPlate
 ) -> OmeZarrPlate:
-    """Fixture extending plate_dataset with FeatureTables on selected wells."""
-    # Add a feature table referencing "object" label to C03 and D04
+    """Fixture extending plate_dataset with FeatureTables on all wells."""
     image_dict = plate_dataset.get_images()
-    # C03: 2 objects → feature table with 2 rows
-    c03_feature_df = pd.DataFrame(
-        {"label": [1, 2], "area": [128, 64], "intensity_mean": [150.0, 200.0]}
-    )
+
+    # morphology feature table referencing "object" label — present in all wells
     image_dict["C/03/fov0"].add_table(
         "morphology",
-        FeatureTable(c03_feature_df, reference_label="object"),
+        FeatureTable(
+            pd.DataFrame({"label": [1, 2], "area": [128, 64], "intensity_mean": [150.0, 200.0]}),
+            reference_label="object",
+        ),
     )
-    # D04: 1 object → feature table with 1 row
-    d04_feature_df = pd.DataFrame(
-        {"label": [1], "area": [512], "intensity_mean": [175.0]}
+    image_dict["C/04/fov0"].add_table(
+        "morphology",
+        FeatureTable(
+            pd.DataFrame(columns=["label", "area", "intensity_mean"]),
+            reference_label="object",
+        ),
+    )
+    image_dict["D/03/fov0"].add_table(
+        "morphology",
+        FeatureTable(
+            pd.DataFrame({"label": [1], "area": [4096], "intensity_mean": [128.0]}),
+            reference_label="object",
+        ),
     )
     image_dict["D/04/fov0"].add_table(
         "morphology",
-        FeatureTable(d04_feature_df, reference_label="object"),
+        FeatureTable(
+            pd.DataFrame({"label": [1], "area": [512], "intensity_mean": [175.0]}),
+            reference_label="object",
+        ),
     )
-    # C03: a nuclei feature table (for the nuclei label)
-    c03_nuclei_df = pd.DataFrame({"label": [1], "area": [64]})
+
+    # nuclei_morphology feature table referencing "nuclei" label — present in all wells
     image_dict["C/03/fov0"].add_table(
         "nuclei_morphology",
-        FeatureTable(c03_nuclei_df, reference_label="nuclei"),
+        FeatureTable(
+            pd.DataFrame({"label": [1], "area": [64]}),
+            reference_label="nuclei",
+        ),
     )
+    image_dict["C/04/fov0"].add_table(
+        "nuclei_morphology",
+        FeatureTable(
+            pd.DataFrame({"label": [1], "area": [64]}),
+            reference_label="nuclei",
+        ),
+    )
+    image_dict["D/03/fov0"].add_table(
+        "nuclei_morphology",
+        FeatureTable(
+            pd.DataFrame(columns=["label", "area"]),
+            reference_label="nuclei",
+        ),
+    )
+    image_dict["D/04/fov0"].add_table(
+        "nuclei_morphology",
+        FeatureTable(
+            pd.DataFrame({"label": [1], "area": [256]}),
+            reference_label="nuclei",
+        ),
+    )
+
     return plate_dataset
 
 
@@ -507,8 +545,7 @@ def test_plate_include_feature_tables(
 
     dataset_dir = output_directory / "test_plate.zarr"
 
-    # C03 and D04 have a "morphology" feature table for "object" label
-    # C03 also has a "nuclei_morphology" feature table for "nuclei" label
+    # All wells must have a "morphology" feature table file for "object" label
     assert (dataset_dir / "tables" / "C03_object" / "morphology.tsv").exists()
     morphology_c03 = pd.read_csv(
         dataset_dir / "tables" / "C03_object" / "morphology.tsv", sep="\t"
@@ -517,18 +554,34 @@ def test_plate_include_feature_tables(
     assert set(morphology_c03.columns) == {"label", "area", "intensity_mean"}
     assert len(morphology_c03) == 2
 
+    assert (dataset_dir / "tables" / "C04_object" / "morphology.tsv").exists()
+    morphology_c04 = pd.read_csv(
+        dataset_dir / "tables" / "C04_object" / "morphology.tsv", sep="\t"
+    )
+    assert set(morphology_c04.columns) == {"label", "area", "intensity_mean"}
+    assert len(morphology_c04) == 0  # C04 has no objects
+
+    assert (dataset_dir / "tables" / "D03_object" / "morphology.tsv").exists()
+    morphology_d03 = pd.read_csv(
+        dataset_dir / "tables" / "D03_object" / "morphology.tsv", sep="\t"
+    )
+    assert len(morphology_d03) == 1
+
     assert (dataset_dir / "tables" / "D04_object" / "morphology.tsv").exists()
     morphology_d04 = pd.read_csv(
         dataset_dir / "tables" / "D04_object" / "morphology.tsv", sep="\t"
     )
     assert len(morphology_d04) == 1
 
-    # nuclei label feature table should be in the nuclei table directory
+    # All wells must have a "nuclei_morphology" feature table file for "nuclei" label
     assert (dataset_dir / "tables" / "C03_nuclei" / "nuclei_morphology.tsv").exists()
-
-    # Wells without a feature table should not have extra files
-    assert not (dataset_dir / "tables" / "C04_object" / "morphology.tsv").exists()
-    assert not (dataset_dir / "tables" / "D03_object" / "morphology.tsv").exists()
+    assert (dataset_dir / "tables" / "C04_nuclei" / "nuclei_morphology.tsv").exists()
+    assert (dataset_dir / "tables" / "D03_nuclei" / "nuclei_morphology.tsv").exists()
+    nuclei_d03 = pd.read_csv(
+        dataset_dir / "tables" / "D03_nuclei" / "nuclei_morphology.tsv", sep="\t"
+    )
+    assert len(nuclei_d03) == 0  # D03 has no nuclei
+    assert (dataset_dir / "tables" / "D04_nuclei" / "nuclei_morphology.tsv").exists()
 
     # The MoBIE model should list the additional tables in the segmentation display
     dataset = Dataset(dataset_dir)
@@ -581,8 +634,10 @@ def test_plate_include_feature_tables_respects_exclude_labels(
 
     dataset_dir = output_directory / "test_plate.zarr"
 
-    # object tables and feature tables should still be there
+    # object tables and feature tables should be present for all wells
     assert (dataset_dir / "tables" / "C03_object" / "morphology.tsv").exists()
+    assert (dataset_dir / "tables" / "C04_object" / "morphology.tsv").exists()
+    assert (dataset_dir / "tables" / "D03_object" / "morphology.tsv").exists()
     assert (dataset_dir / "tables" / "D04_object" / "morphology.tsv").exists()
 
     # nuclei feature table directory should not exist (label was excluded)
