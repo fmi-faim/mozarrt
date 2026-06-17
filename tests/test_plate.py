@@ -9,6 +9,7 @@ from ngio import (
     OmeZarrContainer,
     OmeZarrPlate,
 )
+from ngio.tables import FeatureTable
 from pathlib import Path
 import pandas as pd
 import shutil
@@ -123,6 +124,38 @@ def plate_dataset(tmp_plate_zarr_path: Path) -> OmeZarrPlate:
     )
 
     return plate
+
+
+@pytest.fixture
+def plate_dataset_with_feature_tables(
+    tmp_plate_zarr_path: Path, plate_dataset: OmeZarrPlate
+) -> OmeZarrPlate:
+    """Fixture extending plate_dataset with FeatureTables on selected wells."""
+    # Add a feature table referencing "object" label to C03 and D04
+    image_dict = plate_dataset.get_images()
+    # C03: 2 objects → feature table with 2 rows
+    c03_feature_df = pd.DataFrame(
+        {"label": [1, 2], "area": [128, 64], "intensity_mean": [150.0, 200.0]}
+    )
+    image_dict["C/03/fov0"].add_table(
+        "morphology",
+        FeatureTable(c03_feature_df, reference_label="object"),
+    )
+    # D04: 1 object → feature table with 1 row
+    d04_feature_df = pd.DataFrame(
+        {"label": [1], "area": [512], "intensity_mean": [175.0]}
+    )
+    image_dict["D/04/fov0"].add_table(
+        "morphology",
+        FeatureTable(d04_feature_df, reference_label="object"),
+    )
+    # C03: a nuclei feature table (for the nuclei label)
+    c03_nuclei_df = pd.DataFrame({"label": [1], "area": [64]})
+    image_dict["C/03/fov0"].add_table(
+        "nuclei_morphology",
+        FeatureTable(c03_nuclei_df, reference_label="nuclei"),
+    )
+    return plate_dataset
 
 
 def _get_label_array(
@@ -456,3 +489,108 @@ def test_plate_merged_grid_positions_follow_well_layout(
             object_merged_grid.sources, object_merged_grid.positions.root
         )
     } == expected_positions
+
+
+def test_plate_include_feature_tables(
+    plate_dataset_with_feature_tables: OmeZarrPlate, tmp_path: Path
+):
+    """Test that FeatureTables are written as additional TSV files and registered
+    as additionalTables in the MoBIE segmentation display."""
+    output_directory = tmp_path / "plate_project_output_feature_tables"
+    output_directory.mkdir(exist_ok=True)
+
+    project(
+        tmp_path / "test_plate.zarr",
+        output_directory,
+        include_feature_tables=True,
+    )
+
+    dataset_dir = output_directory / "test_plate.zarr"
+
+    # C03 and D04 have a "morphology" feature table for "object" label
+    # C03 also has a "nuclei_morphology" feature table for "nuclei" label
+    assert (dataset_dir / "tables" / "C03_object" / "morphology.tsv").exists()
+    morphology_c03 = pd.read_csv(
+        dataset_dir / "tables" / "C03_object" / "morphology.tsv", sep="\t"
+    )
+    assert morphology_c03.columns[0] == "label"
+    assert set(morphology_c03.columns) == {"label", "area", "intensity_mean"}
+    assert len(morphology_c03) == 2
+
+    assert (dataset_dir / "tables" / "D04_object" / "morphology.tsv").exists()
+    morphology_d04 = pd.read_csv(
+        dataset_dir / "tables" / "D04_object" / "morphology.tsv", sep="\t"
+    )
+    assert len(morphology_d04) == 1
+
+    # nuclei label feature table should be in the nuclei table directory
+    assert (dataset_dir / "tables" / "C03_nuclei" / "nuclei_morphology.tsv").exists()
+
+    # Wells without a feature table should not have extra files
+    assert not (dataset_dir / "tables" / "C04_object" / "morphology.tsv").exists()
+    assert not (dataset_dir / "tables" / "D03_object" / "morphology.tsv").exists()
+
+    # The MoBIE model should list the additional tables in the segmentation display
+    dataset = Dataset(dataset_dir)
+    dataset.load()
+    dataset_model_json = dataset.model.model_dump_json(by_alias=True)
+    assert "morphology.tsv" in dataset_model_json
+    assert "nuclei_morphology.tsv" in dataset_model_json
+
+
+def test_plate_include_feature_tables_disabled_by_default(
+    plate_dataset_with_feature_tables: OmeZarrPlate, tmp_path: Path
+):
+    """Test that FeatureTables are NOT included when include_feature_tables=False (default)."""
+    output_directory = tmp_path / "plate_project_output_no_feature_tables"
+    output_directory.mkdir(exist_ok=True)
+
+    project(
+        tmp_path / "test_plate.zarr",
+        output_directory,
+    )
+
+    dataset_dir = output_directory / "test_plate.zarr"
+
+    # No additional table files should exist
+    assert not (dataset_dir / "tables" / "C03_object" / "morphology.tsv").exists()
+    assert not (dataset_dir / "tables" / "D04_object" / "morphology.tsv").exists()
+    assert not (dataset_dir / "tables" / "C03_nuclei" / "nuclei_morphology.tsv").exists()
+
+    # The MoBIE model should not list any additional tables
+    dataset = Dataset(dataset_dir)
+    dataset.load()
+    dataset_model_json = dataset.model.model_dump_json(by_alias=True)
+    assert "morphology.tsv" not in dataset_model_json
+    assert "nuclei_morphology.tsv" not in dataset_model_json
+
+
+def test_plate_include_feature_tables_respects_exclude_labels(
+    plate_dataset_with_feature_tables: OmeZarrPlate, tmp_path: Path
+):
+    """Test that FeatureTables for excluded labels are not included."""
+    output_directory = tmp_path / "plate_project_output_ft_exclude"
+    output_directory.mkdir(exist_ok=True)
+
+    project(
+        tmp_path / "test_plate.zarr",
+        output_directory,
+        include_feature_tables=True,
+        exclude_labels=["nuclei"],
+    )
+
+    dataset_dir = output_directory / "test_plate.zarr"
+
+    # object tables and feature tables should still be there
+    assert (dataset_dir / "tables" / "C03_object" / "morphology.tsv").exists()
+    assert (dataset_dir / "tables" / "D04_object" / "morphology.tsv").exists()
+
+    # nuclei feature table directory should not exist (label was excluded)
+    assert not (dataset_dir / "tables" / "C03_nuclei").exists()
+
+    dataset = Dataset(dataset_dir)
+    dataset.load()
+    dataset_model_json = dataset.model.model_dump_json(by_alias=True)
+    assert "morphology.tsv" in dataset_model_json
+    assert "nuclei_morphology.tsv" not in dataset_model_json
+

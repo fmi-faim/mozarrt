@@ -19,6 +19,7 @@ def project(
     *,
     exclude_labels: list[str] | None = None,
     force_overwrite_dataset: bool = False,
+    include_feature_tables: bool = False,
 ) -> Project:
     """Create a MoBIE project from an HCS plate OME-Zarr dataset.
 
@@ -32,6 +33,11 @@ def project(
         Labels to exclude from the project. Default is None.
     force_overwrite_dataset: bool
         Whether to force overwrite an existing dataset. Default is False.
+    include_feature_tables: bool
+        Whether to include existing FeatureTables from the OME-Zarr dataset as
+        additional MoBIE table data. Only FeatureTables whose reference label is
+        included in the dataset (i.e. not excluded) will be transferred.
+        Default is False.
     """
     plate: OmeZarrPlate = open_ome_zarr_plate(plate_zarr_path)
     excluded_label_names = set(exclude_labels or [])
@@ -108,6 +114,7 @@ def project(
     label_positions = defaultdict(lambda: defaultdict(list))
     label_sources_per_well = defaultdict(list)
     label_tables = defaultdict(lambda: defaultdict(dict))
+    additional_feature_tables = defaultdict(lambda: defaultdict(list))
     dataset_path = output_path / dataset_name
 
     # loop through all wells
@@ -164,6 +171,27 @@ def project(
                 label_tables[sub_path][label][source_name] = table_abs_path.parent
                 label_sources_per_well[well_path].append(source_name)
 
+                if include_feature_tables:
+                    feature_table_names = image_container.list_tables(
+                        filter_types="feature_table"
+                    )
+                    for ft_name in feature_table_names:
+                        ft = image_container.get_feature_table(ft_name)
+                        if ft.reference_label != label:
+                            continue
+                        logger.info(
+                            f"    Including feature table '{ft_name}' "
+                            f"for label '{label}'"
+                        )
+                        ft_df = ft.load_as_pandas_df()
+                        ft_filename = f"{ft_name}.tsv"
+                        ft_abs_path = table_abs_path.parent / ft_filename
+                        ft_df.reset_index().to_csv(ft_abs_path, sep="\t", index=False)
+                        if ft_filename not in additional_feature_tables[sub_path][label]:
+                            additional_feature_tables[sub_path][label].append(
+                                ft_filename
+                            )
+
     for sub_path, channel_dict in image_sources.items():
         for channel_index, channel_name in enumerate(channel_names):
             logger.debug(
@@ -209,6 +237,7 @@ def project(
                 sources=[merged_grid_name],
                 visible=False,
                 color_by_column="label",
+                additional_tables=additional_feature_tables[sub_path][label_name] or None,
             )
 
     # Add region display containing all wells
