@@ -6,7 +6,7 @@ authors = [{ name = "Jan Eglinger", email = "jan.eglinger@fmi.ch" }]
 dependencies = [
   "cyclopts>=4.5.0,<5",
   "loguru>=0.7.3,<0.8",
-  "mobiedantic>=0.7.0,<0.8",
+  "mobiedantic>=0.8.0,<0.9",
   "natsort>=8.4.0,<9",
   "ngio>=0.5.3,<0.6",
   "pandas>=2.3.3,<3",

@@ -20,6 +20,19 @@ def project(
     exclude_labels: list[str] | None = None,
     force_overwrite_dataset: bool = False,
 ) -> Project:
+    """Create a MoBIE project from an HCS plate OME-Zarr dataset.
+
+    Parameters:
+    -----------
+    plate_zarr_path: ExistingDirectory
+        Path to the HCS plate OME-Zarr dataset.
+    output_directory: ExistingDirectory
+        Directory where the MoBIE project will be created.
+    exclude_labels: list[str] | None
+        Labels to exclude from the project. Default is None.
+    force_overwrite_dataset: bool
+        Whether to force overwrite an existing dataset. Default is False.
+    """
     plate: OmeZarrPlate = open_ome_zarr_plate(plate_zarr_path)
     excluded_label_names = set(exclude_labels or [])
     logger.info(f"Creating MoBIE Project for plate at {plate_zarr_path}")
@@ -98,7 +111,9 @@ def project(
     dataset_path = output_path / dataset_name
 
     # loop through all wells
-    for well_path, well_object in tqdm(plate.get_wells().items(), desc="Processing wells"):
+    for well_path, well_object in tqdm(
+        plate.get_wells().items(), desc="Processing wells"
+    ):
         logger.info(f"Processing well: {well_path}")
         row_name, column_name = well_path.split("/")
         well_position = (plate.columns.index(column_name), plate.rows.index(row_name))
